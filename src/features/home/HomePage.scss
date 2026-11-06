@@ -1,0 +1,373 @@
+
+@use "../../styles/variables" as *;
+
+.home-page {
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+  width: 100%;
+  animation: homeFadeIn 0.5s ease;
+}
+
+// Hero section
+.hero-section {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 300px;
+  padding: 48px;
+  overflow: hidden;
+  border-radius: 24px;
+  background: linear-gradient(125deg, #253b80 0%, #5b45c5 55%, #a34fba 100%);
+  color: #ffffff;
+  isolation: isolate;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 600px;
+
+  h1 {
+    max-width: 550px;
+    margin: 18px 0;
+    font-size: clamp(30px, 4vw, 46px);
+    line-height: 1.15;
+    font-weight: 800;
+    letter-spacing: -1.5px;
+  }
+
+  p {
+    max-width: 480px;
+    margin-bottom: 28px;
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 16px;
+    line-height: 1.7;
+  }
+}
+
+.hero-label {
+  display: inline-block;
+  padding: 8px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 30px;
+  background: rgba(255, 255, 255, 0.12);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
+.hero-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  padding: 13px 22px;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #493da3;
+  font-weight: 700;
+  transition: transform $transition, box-shadow $transition;
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  }
+
+  &:focus-visible {
+    outline: 3px solid #ffffff;
+    outline-offset: 4px;
+  }
+}
+
+// Decorative geometry
+.hero-decoration {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+
+  > div {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255, 255, 255, 0.8);
+    font-weight: 700;
+  }
+}
+
+.hero-circle {
+  top: 35px;
+  right: 12%;
+  width: 125px;
+  height: 125px;
+  border: 3px solid rgba(255, 255, 255, 0.35);
+  border-radius: 50%;
+  font-size: 48px;
+}
+
+.hero-triangle {
+  right: 3%;
+  bottom: 25px;
+  font-size: 110px;
+  transform: rotate(12deg);
+}
+
+.hero-square {
+  right: 28%;
+  bottom: 25px;
+  width: 85px;
+  height: 85px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 15px;
+  font-size: 35px;
+  transform: rotate(18deg);
+}
+
+// Geometry sections
+.geometry-section {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  h2 {
+    margin: 0;
+    color: var(--text-primary);
+    font-size: 23px;
+    font-weight: 800;
+  }
+}
+
+// Figure cards
+.figure-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.figure-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  min-height: 175px;
+  padding: 24px;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+  border-radius: 18px;
+  background: var(--bg-card);
+  color: var(--text-primary);
+  box-shadow: var(--shadow);
+  transition:
+    transform $transition,
+    border-color $transition,
+    box-shadow $transition;
+
+  &:hover {
+    transform: translateY(-5px);
+    border-color: var(--accent);
+    box-shadow: 0 12px 28px rgba(53, 109, 243, 0.12);
+
+    .figure-symbol {
+      transform: scale(1.12) rotate(-5deg);
+    }
+
+    .card-arrow {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  &:focus-visible {
+    @include focus-ring;
+  }
+
+  h3 {
+    margin: 0;
+    font-size: 17px;
+    font-weight: 700;
+  }
+}
+
+.figure-symbol {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 58px;
+  height: 58px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #e6eaff, #f0e5ff);
+  color: #5948bd;
+  font-size: 34px;
+  transition: transform $transition;
+}
+
+.card-arrow {
+  position: absolute;
+  top: 25px;
+  right: 22px;
+  color: var(--accent);
+  font-size: 22px;
+  opacity: 0.5;
+  transform: translateX(-5px);
+  transition: all $transition;
+}
+
+// Quiz and history cards
+.home-extra-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.extra-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-height: 145px;
+  padding: 26px;
+  overflow: hidden;
+  border-radius: 18px;
+  color: #ffffff;
+  transition: transform $transition, box-shadow $transition;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+  }
+
+  &:focus-visible {
+    @include focus-ring;
+  }
+
+  h2 {
+    margin: 0;
+    font-size: 20px;
+  }
+
+  .card-arrow {
+    color: #ffffff;
+  }
+}
+
+.quiz-card {
+  background: linear-gradient(120deg, #e66a9b, #b64fc4);
+}
+
+.history-card {
+  background: linear-gradient(120deg, #318bc9, #5364d9);
+}
+
+.extra-icon {
+  font-size: 30px;
+}
+
+// Animation
+@keyframes homeFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Tablet
+@media (max-width: $tablet) {
+  .hero-section {
+    min-height: 280px;
+    padding: 32px;
+  }
+
+  .hero-decoration {
+    opacity: 0.5;
+  }
+
+  .figure-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+// Mobile
+@media (max-width: $mobile) {
+  .home-page {
+    gap: 28px;
+  }
+
+  .hero-section {
+    min-height: 300px;
+    padding: 26px 22px;
+  }
+
+  .hero-content {
+    h1 {
+      font-size: 31px;
+    }
+
+    p {
+      font-size: 14px;
+    }
+  }
+
+  .hero-decoration {
+    opacity: 0.25;
+  }
+
+  .hero-circle {
+    right: 5%;
+    top: 15px;
+    width: 85px;
+    height: 85px;
+  }
+
+  .hero-triangle {
+    right: 2%;
+    bottom: 5px;
+    font-size: 75px;
+  }
+
+  .hero-square {
+    display: none !important;
+  }
+
+  .section-heading h2 {
+    font-size: 20px;
+  }
+
+  .figure-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .figure-card {
+    min-height: 125px;
+    padding: 18px;
+  }
+
+  .home-extra-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-page,
+  .figure-card,
+  .figure-symbol,
+  .hero-button,
+  .extra-card {
+    animation: none;
+    transition: none;
+  }
+}

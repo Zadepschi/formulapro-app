@@ -1,0 +1,411 @@
+
+@use "../../styles/variables" as *;
+
+.triangle-page {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  color: var(--text-primary);
+}
+
+.triangle-heading {
+  margin-bottom: 24px;
+
+  h1 {
+    margin: 6px 0 8px;
+    font-size: clamp(24px, 3vw, 32px);
+    font-weight: 700;
+  }
+
+  p {
+    margin: 0;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+}
+
+.triangle-eyebrow {
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.triangle-workspace {
+  display: grid;
+  grid-template-columns: minmax(260px, 0.8fr) minmax(0, 1.5fr);
+  gap: 20px;
+  align-items: stretch;
+}
+
+.triangle-panel,
+.triangle-result-card {
+  min-width: 0;
+  padding: 22px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: $radius-lg;
+  box-shadow: var(--shadow);
+}
+
+.triangle-panel {
+  h2,
+  h3 {
+    margin: 0 0 18px;
+    font-size: 18px;
+  }
+
+  p {
+    color: var(--text-secondary);
+  }
+}
+
+.triangle-mode-switch {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  padding: 4px;
+  margin-bottom: 12px;
+  background: var(--bg-primary);
+  border-radius: $radius-md;
+
+  button {
+    padding: 10px;
+    color: var(--text-secondary);
+    background: transparent;
+    border: 0;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 700;
+    transition: $transition;
+
+    &:hover {
+      color: var(--text-primary);
+    }
+
+    &.active {
+      color: white;
+      background: var(--accent);
+    }
+  }
+}
+
+.triangle-mode-description {
+  margin: 0 0 18px;
+  font-size: 13px;
+}
+
+.triangle-field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-bottom: 15px;
+
+  span {
+    color: var(--text-secondary);
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  input {
+    width: 100%;
+    min-height: 42px;
+    padding: 9px 12px;
+    color: var(--text-primary);
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: $radius-md;
+    font: inherit;
+    box-sizing: border-box;
+    transition: border-color $transition;
+
+    &:focus {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+      border-color: var(--accent);
+    }
+  }
+}
+
+.triangle-live-note {
+  margin: 14px 0 0;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.triangle-error {
+  padding: 10px 12px;
+  margin: 12px 0 0;
+  color: #e05252 !important;
+  background: rgba(224, 82, 82, 0.08);
+  border-radius: $radius-sm;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.triangle-visual-panel {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.triangle-svg-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 280px;
+  width: 100%;
+}
+
+.triangle-svg {
+  display: block;
+  width: 100%;
+  max-width: 500px;
+  max-height: 340px;
+  overflow: visible;
+}
+
+.triangle-shape {
+  fill: rgba(53, 109, 243, 0.09);
+  stroke: var(--accent);
+  stroke-width: 2.5;
+  stroke-linejoin: round;
+}
+
+.triangle-vertices circle {
+  fill: var(--accent);
+}
+
+.triangle-labels {
+  fill: var(--text-primary);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.triangle-heights line {
+  stroke: #e59a36;
+  stroke-width: 1.8;
+  stroke-dasharray: 5 4;
+}
+
+.triangle-medians line {
+  stroke: #20a783;
+  stroke-width: 1.8;
+  stroke-dasharray: 5 4;
+}
+
+.triangle-bisectors line {
+  stroke: #a276dc;
+  stroke-width: 1.8;
+  stroke-dasharray: 5 4;
+}
+
+.triangle-incircle {
+  fill: rgba(32, 167, 131, 0.08);
+  stroke: #20a783;
+  stroke-width: 2;
+}
+
+.triangle-circumcircle {
+  fill: rgba(162, 118, 220, 0.04);
+  stroke: #a276dc;
+  stroke-width: 2;
+  stroke-dasharray: 6 4;
+}
+
+.triangle-empty {
+  display: flex;
+  flex: 1;
+  min-height: 260px;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+.triangle-toggles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 18px;
+  padding-top: 16px;
+  margin-top: auto;
+  border-top: 1px solid var(--border-color);
+
+  label {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    color: var(--text-secondary);
+    font-size: 13px;
+    cursor: pointer;
+  }
+
+  input {
+    accent-color: var(--accent);
+    cursor: pointer;
+
+    &:disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+  }
+}
+
+.triangle-results {
+  margin-top: 30px;
+
+  > h2 {
+    margin: 28px 0 16px;
+    font-size: 22px;
+  }
+}
+
+.triangle-results-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.triangle-result-card {
+  min-width: 0;
+
+  h3 {
+    margin: 0 0 12px;
+    color: var(--text-secondary);
+    font-size: 15px;
+    font-weight: 600;
+  }
+
+  > strong {
+    display: block;
+    margin-bottom: 14px;
+    color: var(--accent);
+    font-size: 28px;
+    overflow-wrap: anywhere;
+  }
+}
+
+.triangle-formula {
+  display: block;
+  padding: 10px 12px;
+  margin-bottom: 12px;
+  color: var(--text-primary);
+  background: var(--bg-primary);
+  border-radius: $radius-sm;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+
+.triangle-solution {
+  padding: 12px;
+  background: var(--bg-primary);
+  border-left: 3px solid var(--accent);
+  border-radius: $radius-sm;
+
+  b {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--accent);
+    font-size: 13px;
+  }
+
+  p {
+    margin: 6px 0;
+    color: var(--text-secondary);
+    font-size: 13px;
+    line-height: 1.7;
+    overflow-wrap: anywhere;
+  }
+}
+
+.triangle-details-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.triangle-detail-row {
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border-color);
+
+  &:last-child {
+    border-bottom: 0;
+  }
+
+  strong {
+    display: block;
+    margin-bottom: 7px;
+    color: var(--accent);
+    font-size: 14px;
+    overflow-wrap: anywhere;
+  }
+
+  p {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 12px;
+    line-height: 1.7;
+    overflow-wrap: anywhere;
+  }
+}
+
+@media (max-width: 900px) {
+  .triangle-workspace {
+    grid-template-columns: 1fr;
+  }
+
+  .triangle-svg-wrapper {
+    min-height: 240px;
+  }
+}
+
+@media (max-width: 600px) {
+  .triangle-page {
+    padding-bottom: 20px;
+  }
+
+  .triangle-panel,
+  .triangle-result-card {
+    padding: 16px;
+  }
+
+  .triangle-results-grid,
+  .triangle-details-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .triangle-svg-wrapper {
+    min-height: 220px;
+  }
+
+  .triangle-toggles {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .triangle-result-card > strong {
+    font-size: 24px;
+  }
+}
+
+
+.triangle-angle {
+  path {
+    fill: none;
+    stroke: #e05252;
+    stroke-width: 2.5;
+    stroke-linecap: round;
+  }
+
+  text {
+    fill: #e05252;
+    font-size: 12px;
+    font-weight: 700;
+  }
+}

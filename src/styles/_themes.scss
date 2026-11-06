@@ -1,0 +1,43 @@
+
+// =================================
+// FormulaPro — Themes
+// =================================
+
+// Light Theme
+:root,
+:root[data-theme="light"] {
+  color-scheme: light;
+
+  --bg-primary: #f7f8fc;
+  --bg-secondary: #ffffff;
+  --bg-card: #ffffff;
+
+  --text-primary: #172033;
+  --text-secondary: #687386;
+
+  --border-color: #e3e7ef;
+
+  --accent: #356df3;
+  --accent-hover: #2458d5;
+
+  --shadow: 0 4px 20px rgba(20, 35, 70, 0.06);
+}
+
+// Dark Theme
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg-primary: #111827;
+  --bg-secondary: #1a2435;
+  --bg-card: #202c40;
+
+  --text-primary: #f3f6fc;
+  --text-secondary: #a6b1c4;
+
+  --border-color: #344157;
+
+  --accent: #6b91ff;
+  --accent-hover: #8ba9ff;
+
+  --shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}

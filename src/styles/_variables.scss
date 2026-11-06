@@ -1,0 +1,51 @@
+
+// =================================
+// FormulaPro — Variables
+// =================================
+
+// Typography
+$font-main: Inter, Arial, sans-serif;
+
+// Border radius
+$radius-sm: 6px;
+$radius-md: 12px;
+$radius-lg: 18px;
+
+// Animation
+$transition: 0.2s ease;
+
+// Layout
+$sidebar-width: 250px;
+$header-height: 76px;
+$container-width: 1440px;
+
+// Breakpoints
+$mobile: 600px;
+$tablet: 760px;
+$desktop: 1000px;
+$wide: 1200px;
+
+// Responsive mixins
+@mixin mobile {
+  @media (max-width: $mobile) {
+    @content;
+  }
+}
+
+@mixin tablet {
+  @media (max-width: $tablet) {
+    @content;
+  }
+}
+
+@mixin desktop {
+  @media (max-width: $desktop) {
+    @content;
+  }
+}
+
+// Focus accessibility
+@mixin focus-ring {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
