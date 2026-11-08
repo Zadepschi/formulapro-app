@@ -1,3 +1,4 @@
+
 import {
   createContext,
   useContext,
@@ -6,12 +7,12 @@ import {
   type ReactNode,
 } from "react";
 
-export type Theme = "light" | "dark" | "system";
+export type Theme = "light" | "dark" | "pastel";
 
 interface ThemeContextType {
   theme: Theme;
   setTheme: (theme: Theme) => void;
-  resolvedTheme: "light" | "dark";
+  resolvedTheme: Theme;
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(
@@ -20,19 +21,9 @@ const ThemeContext = createContext<ThemeContextType | undefined>(
 
 const STORAGE_KEY = "formulapro:theme";
 
-function getSystemTheme(): "light" | "dark" {
-  if (typeof window === "undefined") {
-    return "light";
-  }
-
-  return window.matchMedia("(prefers-color-scheme: dark)").matches
-    ? "dark"
-    : "light";
-}
-
 function getInitialTheme(): Theme {
   if (typeof window === "undefined") {
-    return "system";
+    return "light";
   }
 
   const savedTheme = localStorage.getItem(STORAGE_KEY);
@@ -40,12 +31,12 @@ function getInitialTheme(): Theme {
   if (
     savedTheme === "light" ||
     savedTheme === "dark" ||
-    savedTheme === "system"
+    savedTheme === "pastel"
   ) {
     return savedTheme;
   }
 
-  return "system";
+  return "light";
 }
 
 interface ThemeProviderProps {
@@ -55,43 +46,19 @@ interface ThemeProviderProps {
 export function ThemeProvider({ children }: ThemeProviderProps) {
   const [theme, setTheme] = useState<Theme>(getInitialTheme);
 
-  const [systemTheme, setSystemTheme] = useState<
-    "light" | "dark"
-  >(getSystemTheme);
-
-  const resolvedTheme =
-    theme === "system" ? systemTheme : theme;
+  const resolvedTheme = theme;
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, theme);
-  }, [theme]);
 
-  useEffect(() => {
-    const mediaQuery = window.matchMedia(
-      "(prefers-color-scheme: dark)"
-    );
-
-    const handleChange = (event: MediaQueryListEvent) => {
-      setSystemTheme(event.matches ? "dark" : "light");
-    };
-
-    setSystemTheme(mediaQuery.matches ? "dark" : "light");
-
-    mediaQuery.addEventListener("change", handleChange);
-
-    return () => {
-      mediaQuery.removeEventListener("change", handleChange);
-    };
-  }, []);
-
-  useEffect(() => {
     document.documentElement.setAttribute(
       "data-theme",
       resolvedTheme
     );
 
-    document.documentElement.style.colorScheme = resolvedTheme;
-  }, [resolvedTheme]);
+    document.documentElement.style.colorScheme =
+      resolvedTheme === "dark" ? "dark" : "light";
+  }, [theme, resolvedTheme]);
 
   return (
     <ThemeContext.Provider

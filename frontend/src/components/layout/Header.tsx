@@ -49,7 +49,7 @@ export function Header() {
           >
             <option value="light">{t("light")}</option>
             <option value="dark">{t("dark")}</option>
-            <option value="system">{t("system")}</option>
+            <option value="pastel">Pastel</option>
           </select>
         </label>
       </div>

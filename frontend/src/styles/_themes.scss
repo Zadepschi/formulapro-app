@@ -3,41 +3,77 @@
 // FormulaPro — Themes
 // =================================
 
-// Light Theme
+// LIGHT — Cream & Yellow
+
 :root,
 :root[data-theme="light"] {
   color-scheme: light;
 
-  --bg-primary: #f7f8fc;
-  --bg-secondary: #ffffff;
-  --bg-card: #ffffff;
+  --bg-primary: #FFFBE0;
+  --bg-secondary: #FFF0E7;
+  --bg-card: #FFFFFF;
 
-  --text-primary: #172033;
-  --text-secondary: #687386;
+  --text-primary: #222831;
+  --text-secondary: #393E46;
 
-  --border-color: #e3e7ef;
+  --border-color: #F0DCCB;
 
-  --accent: #356df3;
-  --accent-hover: #2458d5;
+  --accent: #FCDA05;
+  --accent-hover: #EBC900;
+  --accent-text: #222831;
 
-  --shadow: 0 4px 20px rgba(20, 35, 70, 0.06);
+  --success: #BBF1D2;
+  --warning: #FFC5AA;
+  --danger: #FF9D9D;
+
+  --shadow: 0 4px 20px rgba(57, 62, 70, 0.08);
 }
 
-// Dark Theme
+
+// DARK — Graphite & Gold
 :root[data-theme="dark"] {
   color-scheme: dark;
 
-  --bg-primary: #111827;
-  --bg-secondary: #1a2435;
-  --bg-card: #202c40;
+  --bg-primary: #222831;
+  --bg-secondary: #393E46;
+  --bg-card: #303640;
 
-  --text-primary: #f3f6fc;
-  --text-secondary: #a6b1c4;
+  --text-primary: #FFFB E0;
+  --text-secondary: #D2D3D4;
 
-  --border-color: #344157;
+  --border-color: #505761;
 
-  --accent: #6b91ff;
-  --accent-hover: #8ba9ff;
+  --accent: #FCDA05;
+  --accent-hover: #FFE34A;
+  --accent-text: #222831;
 
-  --shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  --success: #BBF1D2;
+  --warning: #FFC5AA;
+  --danger: #FF9D9D;
+
+  --shadow: 0 4px 20px rgba(0, 0, 0, 0.22);
+}
+
+// PASTEL — Soft Pastel
+:root[data-theme="pastel"] {
+  color-scheme: light;
+
+  --bg-primary: #EEF8CD;
+  --bg-secondary: #FFFFFF;
+  --bg-card: #FFFFFF;
+
+  --text-primary: #222831;
+  --text-secondary: #393E46;
+
+  --border-color: #D8E7C0;
+
+  --accent: #FF9D9D;
+  --accent-hover: #F78686;
+  --accent-text: #222831;
+
+  --success: #BBF1D2;
+  --warning: #FFC5AA;
+  --danger: #E97878;
+
+  --shadow: 0 4px 20px rgba(34, 40, 49, 0.06);
 }
