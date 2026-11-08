@@ -5,6 +5,11 @@ import {
 import { HomePage } from "../features/home/HomePage";
 import { CirclePage } from "../features/circle/CirclePage";
 import { TrianglePage } from "../features/triangle/TrianglePage";
+import { ParallelogramPage } from "../features/parallelogram/ParallelogramPage";
+import QuizPage from "../features/quiz/QuizPage";
+import SpherePage from "../features/sphere/SpherePage";
+import ConePage from "../features/cone/ConePage";
+import PrismPage from "../features/prism/PrismPage";
 
 import { App } from "../app/App";
 
@@ -40,25 +45,25 @@ export const router = createBrowserRouter([
   element: <TrianglePage />,
 },
       {
-        path: "sphere",
-        element: <PlaceholderPage title="Sphere" />,
-      },
-      {
-        path: "cone",
-        element: <PlaceholderPage title="Cone" />,
-      },
-      {
-        path: "prism",
-        element: <PlaceholderPage title="Rectangular Prism" />,
-      },
-      {
-        path: "parallelogram",
-        element: <PlaceholderPage title="Parallelogram" />,
-      },
-      {
-        path: "quiz",
-        element: <PlaceholderPage title="Knowledge Test" />,
-      },
+  path: "sphere",
+  element: <SpherePage />,
+},
+     {
+  path: "cone",
+  element: <ConePage />,
+},
+     {
+  path: "prism",
+  element: <PrismPage />,
+},
+     {
+  path: "parallelogram",
+  element: <ParallelogramPage />,
+},
+     {
+  path: "quiz",
+  element: <QuizPage />,
+},
       {
         path: "history",
         element: <PlaceholderPage title="Calculation History" />,

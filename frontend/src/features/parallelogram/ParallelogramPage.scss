@@ -1,0 +1,396 @@
+
+@use "../../styles/variables" as *;
+
+.parallelogram-page {
+  width: 100%;
+  max-width: $container-width;
+  height: 100%;
+  min-height: 0;
+  box-sizing: border-box;
+  margin: 0 auto;
+  padding: 4px 24px 8px;
+  color: var(--text-primary);
+
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow: hidden;
+
+  &__header {
+    flex-shrink: 0;
+    text-align: center;
+
+    h1 {
+      margin: 0;
+      font-size: 1.65rem;
+      line-height: 1.3;
+    }
+
+    p {
+      margin: 4px 0 0;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+  }
+
+  // Основной блок занимает большую часть доступной высоты.
+  &__top {
+    display: grid;
+    grid-template-columns: minmax(260px, 0.75fr) minmax(0, 1.5fr);
+    gap: 16px;
+    align-items: stretch;
+    flex: 1.35 1 0;
+    min-height: 280px;
+  }
+}
+
+.parallelogram-card {
+  min-width: 0;
+  min-height: 0;
+  box-sizing: border-box;
+  padding: 16px 18px;
+  border: 1px solid var(--border-color);
+  border-radius: $radius-lg;
+  background: var(--bg-card);
+  box-shadow: var(--shadow);
+
+  h2 {
+    margin: 0 0 10px;
+    font-size: 1rem;
+    font-weight: 600;
+  }
+
+  label {
+    display: block;
+    margin: 10px 0 5px;
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+
+  input {
+    width: 100%;
+    min-height: 36px;
+    padding: 7px 10px;
+    box-sizing: border-box;
+    border: 1px solid var(--border-color);
+    border-radius: $radius-sm;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    font: inherit;
+    transition: border-color $transition;
+
+    &:focus {
+      border-color: var(--accent);
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+  }
+
+  &--visual {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: hidden;
+    padding: 14px 18px;
+  }
+}
+
+.parallelogram-svg-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.parallelogram-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: 620px;
+  max-height: 340px;
+  overflow: visible;
+}
+
+.parallelogram-shape {
+  fill: rgba(53, 109, 243, 0.09);
+  stroke: var(--accent);
+  stroke-width: 2.5;
+  stroke-linejoin: round;
+}
+
+.parallelogram-height {
+  stroke: #e59a36;
+  stroke-width: 2;
+  stroke-dasharray: 5 4;
+}
+
+.parallelogram-right-angle {
+  fill: none;
+  stroke: #e59a36;
+  stroke-width: 1.5;
+}
+
+.parallelogram-vertex {
+  fill: var(--accent);
+}
+
+.parallelogram-labels {
+  fill: var(--text-primary);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.parallelogram-error {
+  margin: 8px 0 0;
+  color: #dc4545;
+  font-size: 0.8rem;
+  line-height: 1.35;
+}
+
+// Результаты занимают меньше места, но сохраняют решение.
+.parallelogram-results {
+  flex: 0.85 1 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-top: 2px;
+
+  > h2 {
+    flex-shrink: 0;
+    margin: 0;
+    font-size: 1.05rem;
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    flex: 1;
+    min-height: 0;
+  }
+}
+
+.parallelogram-result-card {
+  min-width: 0;
+  min-height: 0;
+  box-sizing: border-box;
+  padding: 10px 14px;
+  border: 1px solid var(--border-color);
+  border-radius: $radius-md;
+  background: var(--bg-card);
+  box-shadow: var(--shadow);
+
+  &__label {
+    display: block;
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    font-weight: 600;
+  }
+
+  &__value {
+    display: block;
+    margin: 3px 0 6px;
+    color: var(--accent);
+    font-size: 1.4rem;
+    line-height: 1.3;
+    overflow-wrap: anywhere;
+  }
+
+  &__solution {
+    padding-top: 6px;
+    border-top: 1px solid var(--border-color);
+
+    span {
+      display: block;
+      margin: 4px 0 2px;
+      color: var(--text-secondary);
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    p {
+      margin: 3px 0;
+      font-size: 0.8rem;
+      line-height: 1.3;
+      overflow-wrap: anywhere;
+    }
+
+    strong {
+      color: var(--accent);
+    }
+  }
+}
+
+/* Невысокие экраны ноутбуков */
+@media (max-height: 800px) and (min-width: 761px) {
+  .parallelogram-page {
+    gap: 6px;
+    padding-top: 2px;
+    padding-bottom: 4px;
+
+    &__header {
+      h1 {
+        font-size: 1.4rem;
+      }
+
+      p {
+        margin-top: 2px;
+        font-size: 0.78rem;
+      }
+    }
+
+    &__top {
+      flex: 1.2 1 0;
+      min-height: 240px;
+      gap: 10px;
+    }
+  }
+
+  .parallelogram-card {
+    padding: 10px 13px;
+
+    h2 {
+      margin-bottom: 5px;
+      font-size: 0.95rem;
+    }
+
+    label {
+      margin-top: 6px;
+      font-size: 0.8rem;
+    }
+
+    input {
+      min-height: 30px;
+      padding: 4px 8px;
+    }
+  }
+
+  .parallelogram-svg {
+    max-height: 280px;
+  }
+
+  .parallelogram-results {
+    flex: 0.8 1 0;
+    gap: 5px;
+
+    > h2 {
+      font-size: 0.95rem;
+    }
+  }
+
+  .parallelogram-result-card {
+    padding: 8px 12px;
+
+    &__value {
+      font-size: 1.25rem;
+      margin-bottom: 4px;
+    }
+
+    &__solution {
+      padding-top: 4px;
+
+      span {
+        margin: 3px 0 2px;
+      }
+
+      p {
+        font-size: 0.75rem;
+        line-height: 1.2;
+      }
+    }
+  }
+}
+
+/* Планшеты */
+@media (max-width: $tablet) {
+  .parallelogram-page {
+    height: auto;
+    min-height: 0;
+    overflow: visible;
+    padding: 16px;
+
+    &__top {
+      grid-template-columns: 1fr;
+      flex: none;
+      min-height: 0;
+    }
+  }
+
+  .parallelogram-card {
+    min-height: 0;
+  }
+
+  .parallelogram-card--visual {
+    min-height: 280px;
+  }
+
+  .parallelogram-results {
+    flex: none;
+
+    &__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  .parallelogram-svg {
+    height: auto;
+    max-width: 420px;
+    max-height: 280px;
+  }
+
+  .parallelogram-svg-wrapper {
+    min-height: 220px;
+  }
+}
+
+/* Мобильные устройства */
+@media (max-width: $mobile) {
+  .parallelogram-page {
+    width: 100%;
+    height: auto;
+    min-height: 0;
+    padding: 12px;
+    gap: 12px;
+
+    &__header {
+      h1 {
+        font-size: 1.5rem;
+      }
+    }
+
+    &__top {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .parallelogram-card {
+    padding: 14px;
+  }
+
+  .parallelogram-card--visual {
+    min-height: 240px;
+    padding: 12px;
+  }
+
+  .parallelogram-svg {
+    max-width: 300px;
+    max-height: 220px;
+  }
+
+  .parallelogram-results {
+    flex: none;
+
+    &__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .parallelogram-result-card {
+    padding: 14px;
+  }
+}
