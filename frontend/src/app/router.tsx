@@ -15,18 +15,6 @@ import { AboutPage } from "../features/about/AboutPage";
 
 import { App } from "../app/App";
 
-function PlaceholderPage({
-  title,
-}: {
-  title: string;
-}) {
-  return (
-    <main className="page">
-      <h1>{title}</h1>
-      <p>Раздел находится в разработке.</p>
-    </main>
-  );
-}
 
 export const router = createBrowserRouter([
   {
