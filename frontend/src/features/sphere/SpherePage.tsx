@@ -1,7 +1,9 @@
+
 import { useMemo, useState } from "react";
 import { calculateSphere } from "../../domain/geometry/sphere/sphere";
 import SphereVisualization from "./components/SphereVisualization";
 import { useI18n } from "../../app/providers/I18nProvider";
+import { saveCalculation } from "../../shared/api/history";
 import "./SpherePage.scss";
 
 export default function SpherePage() {
@@ -9,6 +11,9 @@ export default function SpherePage() {
   const isRu = language === "ru";
 
   const [radius, setRadius] = useState("5");
+  const [saving, setSaving] = useState(false);
+  const [saveMessage, setSaveMessage] = useState("");
+  const [saveError, setSaveError] = useState(false);
 
   const numericRadius = Number(radius);
 
@@ -36,6 +41,42 @@ export default function SpherePage() {
 
   const formatFormulaNumber = (value: number) =>
     Number(value.toFixed(2)).toString();
+
+  async function handleSave() {
+    if (!results || saving) return;
+
+    setSaving(true);
+    setSaveMessage("");
+    setSaveError(false);
+
+    try {
+      await saveCalculation(
+        "SPHERE",
+        {
+          radius: results.radius,
+        },
+        {
+          surfaceArea: results.surfaceArea,
+          volume: results.volume,
+        }
+      );
+
+      setSaveMessage(
+        isRu
+          ? "Вычисление успешно сохранено в истории!"
+          : "Calculation successfully saved to history!"
+      );
+    } catch {
+      setSaveError(true);
+      setSaveMessage(
+        isRu
+          ? "Не удалось сохранить вычисление. Проверьте подключение к серверу."
+          : "Could not save the calculation. Check the server connection."
+      );
+    } finally {
+      setSaving(false);
+    }
+  }
 
   return (
     <main className="sphere-page">
@@ -67,7 +108,10 @@ export default function SpherePage() {
                 min="0"
                 step="any"
                 value={radius}
-                onChange={(event) => setRadius(event.target.value)}
+                onChange={(event) => {
+                  setRadius(event.target.value);
+                  setSaveMessage("");
+                }}
                 placeholder={isRu ? "Введите радиус" : "Enter radius"}
               />
 
@@ -114,73 +158,99 @@ export default function SpherePage() {
         </h2>
 
         {results ? (
-          <div className="sphere-results__grid">
-            <article className="sphere-result-card">
-              <span className="sphere-result-card__label">
-                {isRu
-                  ? "Площадь поверхности"
-                  : "Surface area"}
-              </span>
+          <>
+            <div className="sphere-results__grid">
+              <article className="sphere-result-card">
+                <span className="sphere-result-card__label">
+                  {isRu
+                    ? "Площадь поверхности"
+                    : "Surface area"}
+                </span>
 
-              <strong className="sphere-result-card__value">
-                {formatNumber(results.surfaceArea)}
-              </strong>
+                <strong className="sphere-result-card__value">
+                  {formatNumber(results.surfaceArea)}
+                </strong>
 
-              <div className="sphere-result-card__details">
-                <p>
-                  <b>{isRu ? "Формула:" : "Formula:"}</b>{" "}
-                  S = 4πR²
+                <div className="sphere-result-card__details">
+                  <p>
+                    <b>{isRu ? "Формула:" : "Formula:"}</b>{" "}
+                    S = 4πR²
+                  </p>
+
+                  <p>
+                    <b>{isRu ? "Подстановка:" : "Substitution:"}</b>{" "}
+                    S = 4 × π × {formatFormulaNumber(results.radius)}²
+                  </p>
+
+                  <p>
+                    <b>{isRu ? "Решение:" : "Solution:"}</b>{" "}
+                    S = 4 × π ×{" "}
+                    {formatFormulaNumber(results.radius ** 2)}
+                  </p>
+
+                  <p>
+                    S = {formatFormulaNumber(results.surfaceArea)}
+                  </p>
+                </div>
+              </article>
+
+              <article className="sphere-result-card">
+                <span className="sphere-result-card__label">
+                  {isRu ? "Объём сферы" : "Sphere volume"}
+                </span>
+
+                <strong className="sphere-result-card__value">
+                  {formatNumber(results.volume)}
+                </strong>
+
+                <div className="sphere-result-card__details">
+                  <p>
+                    <b>{isRu ? "Формула:" : "Formula:"}</b>{" "}
+                    V = 4/3πR³
+                  </p>
+
+                  <p>
+                    <b>{isRu ? "Подстановка:" : "Substitution:"}</b>{" "}
+                    V = 4/3 × π × {formatFormulaNumber(results.radius)}³
+                  </p>
+
+                  <p>
+                    <b>{isRu ? "Решение:" : "Solution:"}</b>{" "}
+                    V = 4/3 × π ×{" "}
+                    {formatFormulaNumber(results.radius ** 3)}
+                  </p>
+
+                  <p>
+                    V = {formatFormulaNumber(results.volume)}
+                  </p>
+                </div>
+              </article>
+            </div>
+
+            <div className="sphere-save">
+              <button
+                type="button"
+                className="sphere-save__button"
+                onClick={() => void handleSave()}
+                disabled={saving}
+              >
+                {saving
+                  ? isRu ? "Сохранение..." : "Saving..."
+                  : isRu ? "Сохранить в историю" : "Save to history"}
+              </button>
+
+              {saveMessage && (
+                <p
+                  className={`sphere-save__message ${
+                    saveError ? "sphere-save__message--error" : ""
+                  }`}
+                  role="status"
+                >
+                  {saveMessage}
                 </p>
-
-                <p>
-                  <b>{isRu ? "Подстановка:" : "Substitution:"}</b>{" "}
-                  S = 4 × π × {formatFormulaNumber(results.radius)}²
-                </p>
-
-                <p>
-                  <b>{isRu ? "Решение:" : "Solution:"}</b>{" "}
-                  S = 4 × π ×{" "}
-                  {formatFormulaNumber(results.radius ** 2)}
-                </p>
-
-                <p>
-                  S = {formatFormulaNumber(results.surfaceArea)}
-                </p>
-              </div>
-            </article>
-
-            <article className="sphere-result-card">
-              <span className="sphere-result-card__label">
-                {isRu ? "Объём сферы" : "Sphere volume"}
-              </span>
-
-              <strong className="sphere-result-card__value">
-                {formatNumber(results.volume)}
-              </strong>
-
-              <div className="sphere-result-card__details">
-                <p>
-                  <b>{isRu ? "Формула:" : "Formula:"}</b>{" "}
-                  V = 4/3πR³
-                </p>
-
-                <p>
-                  <b>{isRu ? "Подстановка:" : "Substitution:"}</b>{" "}
-                  V = 4/3 × π × {formatFormulaNumber(results.radius)}³
-                </p>
-
-                <p>
-                  <b>{isRu ? "Решение:" : "Solution:"}</b>{" "}
-                  V = 4/3 × π ×{" "}
-                  {formatFormulaNumber(results.radius ** 3)}
-                </p>
-
-                <p>
-                  V = {formatFormulaNumber(results.volume)}
-                </p>
-              </div>
-            </article>
-          </div>
+              )}
+            </div>
+          </>
         ) : (
           <div className="sphere-results__empty">
             {isRu

@@ -2,6 +2,11 @@
 import { NavLink, useParams } from "react-router-dom";
 import { useI18n } from "../../app/providers/I18nProvider";
 
+interface SidebarProps {
+  onNavigate: () => void;
+  isOpen: boolean;
+}
+
 const figures2D = [
   { path: "circle", label: "circle" },
   { path: "triangle", label: "triangle" },
@@ -14,21 +19,23 @@ const figures3D = [
   { path: "prism", label: "prism" },
 ] as const;
 
-export function Sidebar() {
+export function Sidebar({ onNavigate, isOpen }: SidebarProps) {
   const { language, t } = useI18n();
   const { lang } = useParams();
 
   const currentLanguage = lang || language;
 
+  const linkClass = ({ isActive }: { isActive: boolean }) =>
+    `sidebar-link ${isActive ? "active" : ""}`;
+
   return (
-    <aside className="sidebar">
+    <aside className={`sidebar ${isOpen ? "sidebar-open" : ""}`}>
       <nav className="sidebar-navigation">
         <NavLink
           to={`/${currentLanguage}`}
           end
-          className={({ isActive }) =>
-            `sidebar-link ${isActive ? "active" : ""}`
-          }
+          className={linkClass}
+          onClick={onNavigate}
         >
           {t("home")}
         </NavLink>
@@ -40,9 +47,8 @@ export function Sidebar() {
             <NavLink
               key={figure.path}
               to={`/${currentLanguage}/${figure.path}`}
-              className={({ isActive }) =>
-                `sidebar-link ${isActive ? "active" : ""}`
-              }
+              className={linkClass}
+              onClick={onNavigate}
             >
               {t(figure.label)}
             </NavLink>
@@ -56,41 +62,37 @@ export function Sidebar() {
             <NavLink
               key={figure.path}
               to={`/${currentLanguage}/${figure.path}`}
-              className={({ isActive }) =>
-                `sidebar-link ${isActive ? "active" : ""}`
-              }
+              className={linkClass}
+              onClick={onNavigate}
             >
               {t(figure.label)}
             </NavLink>
           ))}
         </div>
 
-        <div className="sidebar-group">
+        <div className="sidebar-group sidebar-group-secondary">
           <NavLink
             to={`/${currentLanguage}/quiz`}
-            className={({ isActive }) =>
-              `sidebar-link ${isActive ? "active" : ""}`
-            }
+            className={linkClass}
+            onClick={onNavigate}
           >
             {t("quiz")}
           </NavLink>
 
           <NavLink
             to={`/${currentLanguage}/history`}
-            className={({ isActive }) =>
-              `sidebar-link ${isActive ? "active" : ""}`
-            }
+            className={linkClass}
+            onClick={onNavigate}
           >
             {t("history")}
           </NavLink>
 
           <NavLink
             to={`/${currentLanguage}/settings`}
-            className={({ isActive }) =>
-              `sidebar-link ${isActive ? "active" : ""}`
-            }
+            className={linkClass}
+            onClick={onNavigate}
           >
-            {t("settings")}
+            {t("aboutTitle")}
           </NavLink>
         </div>
       </nav>

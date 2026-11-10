@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { calculatePrism } from "../../domain/geometry/prism/prism";
 import PrismVisualization from "./components/PrismVisualization";
 import { useI18n } from "../../app/providers/I18nProvider";
+import { saveCalculation } from "../../shared/api/history";
 import "./PrismPage.scss";
 
 export default function PrismPage() {
@@ -11,6 +12,10 @@ export default function PrismPage() {
   const [length, setLength] = useState("3");
   const [width, setWidth] = useState("2");
   const [height, setHeight] = useState("1");
+
+  const [saving, setSaving] = useState(false);
+  const [saveMessage, setSaveMessage] = useState("");
+  const [saveError, setSaveError] = useState(false);
 
   const lengthValue = Number(length);
   const widthValue = Number(width);
@@ -39,17 +44,59 @@ export default function PrismPage() {
     } catch {
       return null;
     }
-  }, [
-    lengthValue,
-    widthValue,
-    heightValue,
-    isValid,
-  ]);
+  }, [lengthValue, widthValue, heightValue, isValid]);
 
   const formatNumber = (value: number) =>
     new Intl.NumberFormat(isRu ? "ru-RU" : "en-US", {
       maximumFractionDigits: 2,
     }).format(value);
+
+  const handleSave = async () => {
+    if (!results || !isValid || saving) return;
+
+    setSaving(true);
+    setSaveMessage("");
+    setSaveError(false);
+
+    try {
+      await saveCalculation(
+        "PRISM",
+        {
+          length: lengthValue,
+          width: widthValue,
+          height: heightValue,
+        },
+        {
+          volume: results.volume,
+          surfaceArea: results.surfaceArea,
+        }
+      );
+
+      setSaveMessage(
+        isRu
+          ? "Вычисление успешно сохранено в истории!"
+          : "Calculation successfully saved to history!"
+      );
+    } catch {
+      setSaveError(true);
+      setSaveMessage(
+        isRu
+          ? "Не удалось сохранить вычисление. Проверьте соединение с сервером."
+          : "Could not save the calculation. Check your server connection."
+      );
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleInputChange = (
+    setter: (value: string) => void,
+    value: string
+  ) => {
+    setter(value);
+    setSaveMessage("");
+    setSaveError(false);
+  };
 
   return (
     <main className="prism-page">
@@ -87,7 +134,7 @@ export default function PrismPage() {
               step="0.1"
               value={length}
               onChange={(event) =>
-                setLength(event.target.value)
+                handleInputChange(setLength, event.target.value)
               }
               placeholder={isRu ? "Введите длину" : "Enter length"}
             />
@@ -105,7 +152,7 @@ export default function PrismPage() {
               step="0.1"
               value={width}
               onChange={(event) =>
-                setWidth(event.target.value)
+                handleInputChange(setWidth, event.target.value)
               }
               placeholder={isRu ? "Введите ширину" : "Enter width"}
             />
@@ -123,7 +170,7 @@ export default function PrismPage() {
               step="0.1"
               value={height}
               onChange={(event) =>
-                setHeight(event.target.value)
+                handleInputChange(setHeight, event.target.value)
               }
               placeholder={isRu ? "Введите высоту" : "Enter height"}
             />
@@ -198,9 +245,7 @@ export default function PrismPage() {
               </strong>
 
               <div className="prism-result-card__formula">
-                <strong>
-                  S = 2(ab + ah + bh)
-                </strong>
+                <strong>S = 2(ab + ah + bh)</strong>
 
                 <span>
                   {`S = 2 × (${formatNumber(lengthValue)} × ${formatNumber(widthValue)} + ${formatNumber(lengthValue)} × ${formatNumber(heightValue)} + ${formatNumber(widthValue)} × ${formatNumber(heightValue)})`}
@@ -220,6 +265,36 @@ export default function PrismPage() {
           </div>
         )}
       </section>
+
+      {results && (
+        <div className="prism-save">
+          <button
+            type="button"
+            className="prism-save__button"
+            onClick={() => void handleSave()}
+            disabled={saving || !isValid}
+          >
+            {saving
+              ? isRu
+                ? "Сохранение..."
+                : "Saving..."
+              : isRu
+                ? "Сохранить в историю"
+                : "Save to history"}
+          </button>
+
+          {saveMessage && (
+            <p
+              className={`prism-save__message ${
+                saveError ? "prism-save__message--error" : ""
+              }`}
+              role="status"
+            >
+              {saveMessage}
+            </p>
+          )}
+        </div>
+      )}
     </main>
   );
 }

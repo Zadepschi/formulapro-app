@@ -1,11 +1,13 @@
 
 import { useMemo, useState } from "react";
 
-import { calculateParallelogram } from "../../domain/geometry/parallelogram/parallelogram";
+import {
+  calculateParallelogram,
+} from "../../domain/geometry/parallelogram/parallelogram";
 import { ParallelogramSvg } from "./components/ParallelogramSvg";
-import "./ParallelogramPage.scss";
-
 import { useI18n } from "../../app/providers/I18nProvider";
+import { saveCalculation } from "../../shared/api/history";
+import "./ParallelogramPage.scss";
 
 export function ParallelogramPage() {
   const { language } = useI18n();
@@ -14,6 +16,10 @@ export function ParallelogramPage() {
   const [a, setA] = useState("10");
   const [b, setB] = useState("6");
   const [h, setH] = useState("4");
+
+  const [saving, setSaving] = useState(false);
+  const [saveMessage, setSaveMessage] = useState("");
+  const [saveError, setSaveError] = useState(false);
 
   const numericA = Number(a);
   const numericB = Number(b);
@@ -43,6 +49,53 @@ export function ParallelogramPage() {
 
   const format = (value: number) => Number(value.toFixed(2)).toString();
 
+  function updateInput(
+    setter: (value: string) => void,
+    value: string
+  ) {
+    setter(value);
+    setSaveMessage("");
+    setSaveError(false);
+  }
+
+  async function handleSave() {
+    if (!results || saving) return;
+
+    setSaving(true);
+    setSaveMessage("");
+    setSaveError(false);
+
+    try {
+      await saveCalculation(
+        "PARALLELOGRAM",
+        {
+          a: numericA,
+          b: numericB,
+          h: numericH,
+        },
+        {
+          perimeter: results.perimeter,
+          area: results.area,
+        }
+      );
+
+      setSaveMessage(
+        isRu
+          ? "Вычисление успешно сохранено в истории!"
+          : "Calculation successfully saved to history!"
+      );
+    } catch {
+      setSaveError(true);
+      setSaveMessage(
+        isRu
+          ? "Не удалось сохранить вычисление. Проверьте подключение к серверу."
+          : "Could not save the calculation. Check the server connection."
+      );
+    } finally {
+      setSaving(false);
+    }
+  }
+
   return (
     <section className="parallelogram-page">
       <header className="parallelogram-page__header">
@@ -71,7 +124,9 @@ export function ParallelogramPage() {
             min="0.01"
             step="any"
             value={a}
-            onChange={(event) => setA(event.target.value)}
+            onChange={(event) =>
+              updateInput(setA, event.target.value)
+            }
           />
 
           <label htmlFor="parallelogram-b">
@@ -84,7 +139,9 @@ export function ParallelogramPage() {
             min="0.01"
             step="any"
             value={b}
-            onChange={(event) => setB(event.target.value)}
+            onChange={(event) =>
+              updateInput(setB, event.target.value)
+            }
           />
 
           <label htmlFor="parallelogram-h">
@@ -97,7 +154,9 @@ export function ParallelogramPage() {
             min="0.01"
             step="any"
             value={h}
-            onChange={(event) => setH(event.target.value)}
+            onChange={(event) =>
+              updateInput(setH, event.target.value)
+            }
           />
 
           {!isValid && (
@@ -183,6 +242,34 @@ export function ParallelogramPage() {
                 </p>
               </div>
             </article>
+          </div>
+
+          <div className="parallelogram-save">
+            <button
+              type="button"
+              className="parallelogram-save__button"
+              onClick={() => void handleSave()}
+              disabled={saving}
+            >
+              {saving
+                ? isRu
+                  ? "Сохранение..."
+                  : "Saving..."
+                : isRu
+                  ? "Сохранить в историю"
+                  : "Save to history"}
+            </button>
+
+            {saveMessage && (
+              <p
+                className={`parallelogram-save__message ${
+                  saveError ? "parallelogram-save__message--error" : ""
+                }`}
+                role="status"
+              >
+                {saveMessage}
+              </p>
+            )}
           </div>
         </section>
       )}

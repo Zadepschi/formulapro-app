@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useI18n } from "../../app/providers/I18nProvider";
+import { saveCalculation } from "../../shared/api/history";
 import "./QuizPage.scss";
 
 type QuizOption = {
@@ -187,6 +188,8 @@ export default function QuizPage() {
 
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [submitted, setSubmitted] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveError, setSaveError] = useState("");
 
   const score = questions.reduce(
     (total, question) =>
@@ -197,14 +200,83 @@ export default function QuizPage() {
   const answeredCount = Object.keys(answers).length;
   const percentage = Math.round((score / questions.length) * 100);
 
-  const handleSubmit = () => {
-    if (answeredCount !== questions.length) return;
-    setSubmitted(true);
+  const handleSubmit = async () => {
+    if (
+      answeredCount !== questions.length ||
+      submitted ||
+      isSaving
+    ) {
+      return;
+    }
+
+    setIsSaving(true);
+    setSaveError("");
+
+    // Сохраняем ответы как объект с ключами question1, question2 и т. д.
+    // Такой формат корректно отображается рекурсивным рендерером истории.
+    const savedAnswers = Object.fromEntries(
+      questions.map((question) => {
+        const selectedId = answers[question.id];
+        const selectedOption = question.options.find(
+          (option) => option.id === selectedId
+        );
+        const correctOption = question.options.find(
+          (option) => option.id === question.correct
+        );
+
+        return [
+          `question${question.id}`,
+          {
+            question: isRu ? question.ru : question.en,
+            selectedAnswer: selectedOption
+              ? isRu
+                ? selectedOption.ru
+                : selectedOption.en
+              : "",
+            correctAnswer: correctOption
+              ? isRu
+                ? correctOption.ru
+                : correctOption.en
+              : "",
+            isCorrect: selectedId === question.correct,
+          },
+        ];
+      })
+    );
+
+    try {
+      await saveCalculation(
+        "QUIZ",
+        {
+          questionCount: questions.length,
+          answers: savedAnswers,
+        },
+        {
+          score,
+          total: questions.length,
+          percentage,
+          correctAnswers: score,
+          incorrectAnswers: questions.length - score,
+        }
+      );
+
+      setSubmitted(true);
+    } catch (error) {
+      console.error("Quiz history save failed:", error);
+      setSaveError(
+        isRu
+          ? "Не удалось сохранить результат. Нажмите кнопку ещё раз."
+          : "Could not save the result. Please try again."
+      );
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const handleRestart = () => {
     setAnswers({});
     setSubmitted(false);
+    setSaveError("");
   };
 
   return (
@@ -350,13 +422,24 @@ export default function QuizPage() {
                   : `Questions remaining: ${questions.length - answeredCount}`}
               </p>
             )}
+            {saveError && (
+              <p className="quiz-actions__hint" role="alert">
+                {saveError}
+              </p>
+            )}
             <button
               className="quiz-button"
               type="button"
               onClick={handleSubmit}
-              disabled={answeredCount !== questions.length}
+              disabled={answeredCount !== questions.length || isSaving}
             >
-              {isRu ? "Завершить тест" : "Submit answers"}
+              {isSaving
+                ? isRu
+                  ? "Сохранение..."
+                  : "Saving..."
+                : isRu
+                  ? "Завершить тест"
+                  : "Submit answers"}
             </button>
           </>
         ) : (

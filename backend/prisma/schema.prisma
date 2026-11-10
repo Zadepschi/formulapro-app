@@ -1,7 +1,6 @@
-
 generator client {
   provider = "prisma-client"
-  output   = "../generated/prisma"
+  output   = "../src/generated/prisma"
 }
 
 datasource db {
@@ -15,6 +14,7 @@ enum CalculatorType {
   CONE
   PARALLELOGRAM
   PRISM
+  QUIZ
 }
 
 model User {
@@ -39,7 +39,7 @@ model GuestSession {
 
 model Session {
   id        String   @id @default(cuid())
-  tokenHash String  @unique
+  tokenHash String   @unique
   userId    String
   expiresAt DateTime
   createdAt DateTime @default(now())

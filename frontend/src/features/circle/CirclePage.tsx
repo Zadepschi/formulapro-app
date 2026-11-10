@@ -2,6 +2,7 @@
 import { useMemo, useState } from "react";
 
 import { calculateCircle } from "../../domain/geometry/circle/circle";
+import { saveCalculation } from "../../shared/api/history";
 import { CircleCanvas } from "./components/CircleCanvas";
 import "./CirclePage.scss";
 
@@ -13,6 +14,9 @@ export function CirclePage() {
 
   const [radius, setRadius] = useState("50");
   const [angle, setAngle] = useState("90");
+
+  const [saving, setSaving] = useState(false);
+  const [saveMessage, setSaveMessage] = useState("");
 
   const numericRadius = Number(radius);
   const numericAngle = Number(angle);
@@ -36,6 +40,43 @@ export function CirclePage() {
   }, [isValid, numericRadius, numericAngle]);
 
   const format = (value: number) => value.toFixed(2);
+
+  async function handleSave() {
+    if (!results || !isValid || saving) return;
+
+    setSaving(true);
+    setSaveMessage("");
+
+    try {
+      await saveCalculation(
+        "CIRCLE",
+        {
+          radius: numericRadius,
+          angle: numericAngle,
+        },
+        {
+          diameter: results.diameter,
+          circumference: results.circumference,
+          area: results.area,
+          arcLength: results.arcLength,
+        }
+      );
+
+      setSaveMessage(
+        isRu
+          ? "Вычисление сохранено в истории!"
+          : "Calculation saved to history!"
+      );
+    } catch {
+      setSaveMessage(
+        isRu
+          ? "Не удалось сохранить. Проверь, запущен ли сервер."
+          : "Could not save. Check whether the server is running."
+      );
+    } finally {
+      setSaving(false);
+    }
+  }
 
   return (
     <section className="circle-page">
@@ -62,7 +103,10 @@ export function CirclePage() {
             min="0.01"
             step="any"
             value={radius}
-            onChange={(event) => setRadius(event.target.value)}
+            onChange={(event) => {
+              setRadius(event.target.value);
+              setSaveMessage("");
+            }}
           />
 
           <label htmlFor="circle-angle">
@@ -76,7 +120,10 @@ export function CirclePage() {
             max="360"
             step="any"
             value={angle}
-            onChange={(event) => setAngle(event.target.value)}
+            onChange={(event) => {
+              setAngle(event.target.value);
+              setSaveMessage("");
+            }}
           />
 
           {!isValid && (
@@ -162,7 +209,7 @@ export function CirclePage() {
                 {format(results.area)}
               </strong>
 
-              <div className="circle-result-card__solution">
+              <div className="circle-card__solution">
                 <span>{isRu ? "Формула" : "Formula"}</span>
                 <p>A = πr²</p>
 
@@ -194,6 +241,35 @@ export function CirclePage() {
                 </p>
               </div>
             </article>
+          </div>
+
+          <div style={{ marginTop: "20px" }}>
+            <button
+              type="button"
+              onClick={() => void handleSave()}
+              disabled={saving}
+              style={{
+                padding: "12px 20px",
+                border: "none",
+                borderRadius: "10px",
+                background: "var(--accent)",
+                color: "#fff",
+                font: "inherit",
+                fontWeight: 700,
+                cursor: saving ? "wait" : "pointer",
+                opacity: saving ? 0.65 : 1,
+              }}
+            >
+              {saving
+                ? isRu ? "Сохранение..." : "Saving..."
+                : isRu ? "Сохранить в историю" : "Save to history"}
+            </button>
+
+            {saveMessage && (
+              <p role="status" style={{ marginTop: "10px" }}>
+                {saveMessage}
+              </p>
+            )}
           </div>
         </section>
       )}

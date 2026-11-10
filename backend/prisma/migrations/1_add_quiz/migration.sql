@@ -1,0 +1,1 @@
+ALTER TYPE "CalculatorType" ADD VALUE 'QUIZ';

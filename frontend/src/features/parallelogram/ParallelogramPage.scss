@@ -4,17 +4,19 @@
 .parallelogram-page {
   width: 100%;
   max-width: $container-width;
-  height: 100%;
-  min-height: 0;
+  min-height: 100%;
+  height: auto;
   box-sizing: border-box;
   margin: 0 auto;
-  padding: 4px 24px 8px;
+  padding: 12px 24px 24px;
   color: var(--text-primary);
 
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  overflow: hidden;
+  gap: 14px;
+
+  // Страница растёт по содержимому, а не обрезает блоки.
+  overflow: visible;
 
   &__header {
     flex-shrink: 0;
@@ -33,20 +35,18 @@
     }
   }
 
-  // Основной блок занимает большую часть доступной высоты.
+  // Десктоп: ввод слева, визуализация справа.
   &__top {
     display: grid;
     grid-template-columns: minmax(260px, 0.75fr) minmax(0, 1.5fr);
     gap: 16px;
     align-items: stretch;
-    flex: 1.35 1 0;
-    min-height: 280px;
+    width: 100%;
   }
 }
 
 .parallelogram-card {
   min-width: 0;
-  min-height: 0;
   box-sizing: border-box;
   padding: 16px 18px;
   border: 1px solid var(--border-color);
@@ -90,6 +90,8 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
+    min-height: 320px;
     overflow: hidden;
     padding: 14px 18px;
   }
@@ -100,15 +102,14 @@
   justify-content: center;
   align-items: center;
   width: 100%;
-  flex: 1;
-  min-height: 0;
+  min-height: 260px;
   overflow: hidden;
 }
 
 .parallelogram-svg {
   display: block;
   width: 100%;
-  height: 100%;
+  height: auto;
   max-width: 620px;
   max-height: 340px;
   overflow: visible;
@@ -150,17 +151,16 @@
   line-height: 1.35;
 }
 
-// Результаты занимают меньше места, но сохраняют решение.
+// Результаты располагаются ниже визуализации.
 .parallelogram-results {
-  flex: 0.85 1 0;
-  min-height: 0;
   display: flex;
   flex-direction: column;
-  gap: 7px;
-  margin-top: 2px;
+  gap: 10px;
+  width: 100%;
+  min-width: 0;
+  margin-top: 0;
 
   > h2 {
-    flex-shrink: 0;
     margin: 0;
     font-size: 1.05rem;
   }
@@ -169,16 +169,15 @@
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 12px;
-    flex: 1;
-    min-height: 0;
+    width: 100%;
+    min-width: 0;
   }
 }
 
 .parallelogram-result-card {
   min-width: 0;
-  min-height: 0;
   box-sizing: border-box;
-  padding: 10px 14px;
+  padding: 12px 14px;
   border: 1px solid var(--border-color);
   border-radius: $radius-md;
   background: var(--bg-card);
@@ -193,7 +192,7 @@
 
   &__value {
     display: block;
-    margin: 3px 0 6px;
+    margin: 3px 0 8px;
     color: var(--accent);
     font-size: 1.4rem;
     line-height: 1.3;
@@ -201,12 +200,12 @@
   }
 
   &__solution {
-    padding-top: 6px;
+    padding-top: 7px;
     border-top: 1px solid var(--border-color);
 
     span {
       display: block;
-      margin: 4px 0 2px;
+      margin: 5px 0 2px;
       color: var(--text-secondary);
       font-size: 0.7rem;
       font-weight: 600;
@@ -216,7 +215,7 @@
     p {
       margin: 3px 0;
       font-size: 0.8rem;
-      line-height: 1.3;
+      line-height: 1.4;
       overflow-wrap: anywhere;
     }
 
@@ -226,12 +225,59 @@
   }
 }
 
-/* Невысокие экраны ноутбуков */
+// Кнопка сохранения вычисления.
+.parallelogram-save {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+  margin-top: 0;
+
+  &__button {
+    min-height: 42px;
+    padding: 10px 20px;
+    border: 0;
+    border-radius: $radius-md;
+    background: var(--accent);
+    color: #fff;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+    transition: opacity $transition, transform $transition;
+
+    &:hover:not(:disabled) {
+      transform: translateY(-2px);
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    &:focus-visible {
+      @include focus-ring;
+    }
+  }
+
+  &__message {
+    margin: 0;
+    color: #23945b;
+    font-size: 13px;
+    line-height: 1.5;
+
+    &--error {
+      color: #dc4545;
+    }
+  }
+}
+
+// Невысокие экраны ноутбуков.
+// Не сжимаем решение: при необходимости прокручивается страница.
 @media (max-height: 800px) and (min-width: 761px) {
   .parallelogram-page {
-    gap: 6px;
-    padding-top: 2px;
-    padding-bottom: 4px;
+    gap: 10px;
+    padding-top: 6px;
+    padding-bottom: 20px;
 
     &__header {
       h1 {
@@ -242,12 +288,6 @@
         margin-top: 2px;
         font-size: 0.78rem;
       }
-    }
-
-    &__top {
-      flex: 1.2 1 0;
-      min-height: 240px;
-      gap: 10px;
     }
   }
 
@@ -268,31 +308,30 @@
       min-height: 30px;
       padding: 4px 8px;
     }
+
+    &--visual {
+      min-height: 280px;
+    }
+  }
+
+  .parallelogram-svg-wrapper {
+    min-height: 220px;
   }
 
   .parallelogram-svg {
     max-height: 280px;
   }
 
-  .parallelogram-results {
-    flex: 0.8 1 0;
-    gap: 5px;
-
-    > h2 {
-      font-size: 0.95rem;
-    }
-  }
-
   .parallelogram-result-card {
-    padding: 8px 12px;
+    padding: 10px 12px;
 
     &__value {
       font-size: 1.25rem;
-      margin-bottom: 4px;
+      margin-bottom: 5px;
     }
 
     &__solution {
-      padding-top: 4px;
+      padding-top: 5px;
 
       span {
         margin: 3px 0 2px;
@@ -300,55 +339,40 @@
 
       p {
         font-size: 0.75rem;
-        line-height: 1.2;
+        line-height: 1.3;
       }
     }
   }
 }
 
-/* Планшеты */
+// Планшеты.
 @media (max-width: $tablet) {
   .parallelogram-page {
     height: auto;
     min-height: 0;
-    overflow: visible;
     padding: 16px;
+    overflow: visible;
 
     &__top {
       grid-template-columns: 1fr;
-      flex: none;
-      min-height: 0;
     }
-  }
-
-  .parallelogram-card {
-    min-height: 0;
   }
 
   .parallelogram-card--visual {
     min-height: 280px;
   }
 
-  .parallelogram-results {
-    flex: none;
-
-    &__grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-  }
-
-  .parallelogram-svg {
-    height: auto;
-    max-width: 420px;
-    max-height: 280px;
-  }
-
   .parallelogram-svg-wrapper {
     min-height: 220px;
   }
+
+  .parallelogram-svg {
+    max-width: 420px;
+    max-height: 280px;
+  }
 }
 
-/* Мобильные устройства */
+// Мобильные устройства.
 @media (max-width: $mobile) {
   .parallelogram-page {
     width: 100%;
@@ -377,14 +401,16 @@
     padding: 12px;
   }
 
+  .parallelogram-svg-wrapper {
+    min-height: 200px;
+  }
+
   .parallelogram-svg {
     max-width: 300px;
     max-height: 220px;
   }
 
   .parallelogram-results {
-    flex: none;
-
     &__grid {
       grid-template-columns: 1fr;
     }
@@ -392,5 +418,11 @@
 
   .parallelogram-result-card {
     padding: 14px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .parallelogram-save__button {
+    transition: none;
   }
 }

@@ -1,3 +1,4 @@
+
 import {
   createContext,
   useContext,
@@ -22,14 +23,45 @@ const translations = {
     quiz: "Тест знаний",
     history: "История вычислений",
     settings: "Настройки",
+    about: "О проекте",
+
     welcome: "Добро пожаловать в FormulaPro",
     description:
       "Изучайте геометрию, выполняйте расчёты и проверяйте свои знания.",
+
     language: "Язык",
     theme: "Тема",
     light: "Светлая",
     dark: "Тёмная",
-    system: "Системная",
+    pastel: "Пастельная",
+
+    aboutTitle: "О проекте FormulaPro",
+    aboutSubtitle: "Математика становится проще",
+
+    aboutDescriptionTitle: "О приложении",
+    aboutDescription:
+      "FormulaPro — приложение для математических вычислений, изучения геометрии и проверки знаний. Оно помогает выполнять расчёты, изучать геометрические фигуры и лучше понимать математические формулы.",
+
+    aboutFeaturesTitle: "Возможности приложения",
+    aboutFeature2D:
+      "2D-калькуляторы: круг, треугольник и параллелограмм.",
+    aboutFeature3D:
+      "3D-калькуляторы: сфера, конус и прямоугольная призма.",
+    aboutFeatureQuiz:
+      "Тест знаний для проверки понимания математики.",
+    aboutFeatureHistory:
+      "История вычислений для просмотра предыдущих результатов.",
+    aboutFeatureLanguages:
+      "Поддержка русского и английского языков.",
+    aboutFeatureThemes:
+      "Светлая и тёмная темы оформления.",
+
+    aboutMissionTitle: "Наша цель",
+    aboutMission:
+      "Сделать математические вычисления понятными, доступными и удобными для каждого. Мы стремимся объединить обучение и практику в одном приложении.",
+
+    aboutVersion: "Версия",
+    aboutCopyright: "Все права защищены.",
   },
 
   en: {
@@ -45,14 +77,45 @@ const translations = {
     quiz: "Knowledge Test",
     history: "Calculation History",
     settings: "Settings",
+    about: "About",
+
     welcome: "Welcome to FormulaPro",
     description:
       "Explore geometry, perform calculations, and test your knowledge.",
+
     language: "Language",
     theme: "Theme",
     light: "Light",
     dark: "Dark",
-    system: "System",
+    pastel: "Pastel",
+
+    aboutTitle: "About FormulaPro",
+    aboutSubtitle: "Making mathematics easier",
+
+    aboutDescriptionTitle: "About the application",
+    aboutDescription:
+      "FormulaPro is an application for mathematical calculations, learning geometry, and testing your knowledge. It helps users perform calculations, explore geometric shapes, and better understand mathematical formulas.",
+
+    aboutFeaturesTitle: "Application features",
+    aboutFeature2D:
+      "2D calculators: circle, triangle, and parallelogram.",
+    aboutFeature3D:
+      "3D calculators: sphere, cone, and rectangular prism.",
+    aboutFeatureQuiz:
+      "Knowledge test to check your understanding of mathematics.",
+    aboutFeatureHistory:
+      "Calculation history for reviewing previous results.",
+    aboutFeatureLanguages:
+      "Russian and English language support.",
+    aboutFeatureThemes:
+      "Light and dark themes.",
+
+    aboutMissionTitle: "Our mission",
+    aboutMission:
+      "To make mathematical calculations understandable, accessible, and convenient for everyone. We aim to combine learning and practice in one application.",
+
+    aboutVersion: "Version",
+    aboutCopyright: "All rights reserved.",
   },
 };
 

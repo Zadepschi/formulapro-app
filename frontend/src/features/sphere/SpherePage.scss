@@ -355,3 +355,51 @@
     min-height: 220px;
   }
 }
+
+
+
+
+.sphere-save {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+  margin-top: 14px;
+
+  &__button {
+    min-height: 42px;
+    padding: 10px 20px;
+    border: 0;
+    border-radius: $radius-md;
+    background: var(--accent);
+    color: #fff;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+    transition: opacity $transition, transform $transition;
+
+    &:hover:not(:disabled) {
+      transform: translateY(-2px);
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    &:focus-visible {
+      @include focus-ring;
+    }
+  }
+
+  &__message {
+    margin: 0;
+    color: #23945b;
+    font-size: 13px;
+    line-height: 1.5;
+
+    &--error {
+      color: #dc4545;
+    }
+  }
+}

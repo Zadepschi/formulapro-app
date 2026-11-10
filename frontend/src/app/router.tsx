@@ -10,6 +10,8 @@ import QuizPage from "../features/quiz/QuizPage";
 import SpherePage from "../features/sphere/SpherePage";
 import ConePage from "../features/cone/ConePage";
 import PrismPage from "../features/prism/PrismPage";
+import HistoryPage from "../features/history/HistoryPage";
+import { AboutPage } from "../features/about/AboutPage";
 
 import { App } from "../app/App";
 
@@ -65,13 +67,13 @@ export const router = createBrowserRouter([
   element: <QuizPage />,
 },
       {
-        path: "history",
-        element: <PlaceholderPage title="Calculation History" />,
-      },
+  path: "history",
+  element: <HistoryPage />,
+},
       {
-        path: "settings",
-        element: <PlaceholderPage title="Settings" />,
-      },
+  path: "settings",
+  element: <AboutPage />,
+},
     ],
   },
   {

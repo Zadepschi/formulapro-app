@@ -2,6 +2,7 @@
 import { useMemo, useState } from "react";
 import { useI18n } from "../../app/providers/I18nProvider";
 import { TriangleSvg } from "./components/TriangleSvg";
+import { saveCalculation } from "../../shared/api/history";
 import "./TrianglePage.scss";
 
 type TriangleMode = "sss" | "sas";
@@ -185,6 +186,9 @@ export function TrianglePage() {
   const [showIncircle, setShowIncircle] = useState(false);
   const [showCircumcircle, setShowCircumcircle] = useState(false);
 
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveMessage, setSaveMessage] = useState("");
+
   const format = (value: number) =>
     Number(value.toFixed(3)).toString();
 
@@ -212,6 +216,40 @@ export function TrianglePage() {
 
   const result = resultState.result;
   const error = resultState.error;
+
+  const handleSaveCalculation = async () => {
+    if (!result || isSaving) return;
+    setIsSaving(true);
+    setSaveMessage("");
+    try {
+      await saveCalculation(
+        "TRIANGLE",
+        mode === "sss"
+          ? { mode, a: result.a, b: result.b, c: result.c }
+          : { mode, a: result.a, b: result.b, gamma: result.gamma },
+        {
+          perimeter: result.perimeter,
+          semiperimeter: result.semiperimeter,
+          area: result.area,
+          angles: { alpha: result.alpha, beta: result.beta, gamma: result.gamma },
+          heights: result.heights,
+          medians: result.medians,
+          bisectors: result.bisectors,
+          incircle: result.incircle,
+          circumcircle: result.circumcircle,
+        }
+      );
+      setSaveMessage(isRu ? "Вычисление сохранено в истории." : "Calculation saved to history.");
+    } catch {
+      setSaveMessage(
+        isRu
+          ? "Не удалось сохранить. Проверьте подключение к серверу."
+          : "Could not save. Check the server connection."
+      );
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   const solutionCards = result
     ? [
@@ -592,7 +630,22 @@ export function TrianglePage() {
 
       {result && (
         <section className="triangle-results">
-          <h2>{isRu ? "Результаты и ход решения" : "Results and solutions"}</h2>
+          <div className="triangle-results-heading">
+            <h2>{isRu ? "Результаты и ход решения" : "Results and solutions"}</h2>
+            <button
+              type="button"
+              className="triangle-save-button"
+              onClick={handleSaveCalculation}
+              disabled={isSaving}
+            >
+              {isSaving
+                ? isRu ? "Сохранение..." : "Saving..."
+                : isRu ? "Сохранить в историю" : "Save to history"}
+            </button>
+          </div>
+          {saveMessage && (
+            <p className="triangle-save-message" role="status">{saveMessage}</p>
+          )}
 
           <div className="triangle-results-grid">
             {solutionCards.map((card) => (

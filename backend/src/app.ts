@@ -1,8 +1,8 @@
-
 import express from "express";
 import cors from "cors";
 import helmet from "helmet";
 import cookieParser from "cookie-parser";
+import historyRoutes from "./routes/history.routes.js";
 
 const app = express();
 
@@ -18,6 +18,7 @@ app.use(
 app.use(express.json({ limit: "1mb" }));
 app.use(cookieParser());
 
+// Проверка работоспособности API
 app.get("/api/health", (_req, res) => {
   res.status(200).json({
     status: "ok",
@@ -25,5 +26,8 @@ app.get("/api/health", (_req, res) => {
     timestamp: new Date().toISOString(),
   });
 });
+
+// API истории вычислений
+app.use("/api/history", historyRoutes);
 
 export default app;
