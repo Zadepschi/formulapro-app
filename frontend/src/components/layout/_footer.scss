@@ -1,0 +1,45 @@
+
+@use "../../styles/variables" as *;
+
+// =================================
+// FormulaPro — Footer
+// =================================
+
+.app-footer {
+  // Обычное положение в потоке документа
+  position: static;
+
+  // Не растягиваем и не закрепляем футер
+  flex: 0 0 auto;
+
+  display: block;
+
+  width: 100%;
+  box-sizing: border-box;
+
+  margin-top: 0;
+  padding: 22px 5%;
+
+  text-align: center;
+
+  border-top: 1px solid var(--border-color);
+
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+
+  font-size: 13px;
+
+  p {
+    margin: 0;
+  }
+}
+
+// =================================
+// Responsive: Small Mobile
+// =================================
+
+@media (max-width: $mobile) {
+  .app-footer {
+    padding: 16px 4%;
+  }
+}

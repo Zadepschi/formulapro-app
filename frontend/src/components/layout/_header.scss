@@ -1,0 +1,217 @@
+
+@use "../../styles/variables" as *;
+
+// =================================
+// FormulaPro — Header
+// =================================
+
+.app-header {
+  position: relative;
+  z-index: 30;
+  flex: 0 0 auto;
+  box-sizing: border-box;
+
+  min-height: $header-height;
+  padding: 6px 5%;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
+  box-shadow: var(--shadow);
+}
+
+.header-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+.logo-image {
+  display: block;
+  height: 82px;
+  width: auto;
+  object-fit: contain;
+}
+
+.mobile-menu-button {
+  display: none;
+  align-items: center;
+  justify-content: center;
+
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+
+  border: 1px solid var(--border-color);
+  border-radius: $radius-sm;
+
+  background: var(--bg-primary);
+  color: var(--text-primary);
+
+  font-size: 23px;
+  cursor: pointer;
+
+  &:hover {
+    background: var(--bg-card);
+  }
+
+  &:focus-visible {
+    @include focus-ring;
+  }
+}
+
+.main-navigation {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.navigation-link {
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-weight: 500;
+  transition: color $transition;
+
+  &:hover {
+    color: var(--accent);
+  }
+}
+
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.header-control {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.header-control select,
+.header-controls select {
+  padding: 9px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: $radius-sm;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+
+  &:focus-visible {
+    @include focus-ring;
+  }
+}
+
+// =================================
+// Responsive: Desktop and Tablet
+// =================================
+
+@media (max-width: $desktop) {
+  .app-header {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .main-navigation {
+    gap: 14px;
+  }
+}
+
+// =================================
+// Responsive: Mobile Navigation
+// =================================
+
+@media (max-width: $tablet) {
+  .mobile-menu-button {
+    display: flex;
+  }
+
+  .app-header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .header-brand {
+    order: 1;
+  }
+
+  .header-controls {
+    order: 2;
+    margin-left: auto;
+    margin-right: 10px;
+  }
+
+  .mobile-menu-button {
+    display: flex;
+    order: 3;
+    flex-shrink: 0;
+  }
+}
+
+// =================================
+// Responsive: Small Mobile
+// =================================
+
+@media (max-width: $mobile) {
+  .app-header {
+    padding: 8px 4%;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .header-brand {
+    gap: 8px;
+  }
+
+  .mobile-menu-button {
+    width: 38px;
+    height: 38px;
+    font-size: 21px;
+  }
+
+  .logo-image {
+    height: 52px;
+    max-width: 100px;
+  }
+
+  .header-controls {
+    width: auto;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: nowrap;
+    gap: 6px;
+  }
+
+  .header-control {
+    gap: 4px;
+    font-size: 11px;
+  }
+
+  .header-control select {
+    padding: 7px 5px;
+    font-size: 12px;
+    min-width: 0;
+  }
+}
