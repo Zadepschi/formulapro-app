@@ -10,9 +10,9 @@ const figures2D = [
 ] as const;
 
 const figures3D = [
-  { path: "sphere", label: "sphere", symbol: "●" },
-  { path: "cone", label: "cone", symbol: "▲" },
-  { path: "prism", label: "prism", symbol: "▰" },
+  { path: "sphere", label: "sphere", symbol: "◉" },
+  { path: "cone", label: "cone", symbol: "△" },
+  { path: "prism", label: "prism", symbol: "◇" },
 ] as const;
 
 export function HomePage() {
@@ -22,90 +22,296 @@ export function HomePage() {
   const currentLanguage = lang || language;
 
   return (
-    <div className="home-page">
-      <section className="hero-section">
-        <div className="hero-content">
-          <span className="hero-label">FORMULAPRO</span>
+    <main className="premium-home">
 
-          <h1>{t("welcome")}</h1>
+      {/* HERO */}
+      <section className="premium-hero">
 
-          <p>{t("description")}</p>
+        <div className="hero-copy">
+          <div className="eyebrow">
+            ГЕОМЕТРИЯ <span>•</span> ФОРМУЛЫ <span>•</span> РАСЧЁТЫ
+          </div>
 
-          <Link
-            to={`/${currentLanguage}/circle`}
-            className="hero-button"
+          <h1 className="premium-title">
+            Formula<span>Pro</span>
+          </h1>
+
+          <p className="hero-description">
+            {t("description")}
+          </p>
+
+          <div className="feature-list">
+            <div className="feature-item">
+              <span>⌗</span>
+              <p>Расчёты<br />онлайн</p>
+            </div>
+
+            <div className="feature-item">
+              <span>▤</span>
+              <p>Формулы<br />и объяснения</p>
+            </div>
+
+            <div className="feature-item">
+              <span>▥</span>
+              <p>Тесты<br />на знания</p>
+            </div>
+
+            <div className="feature-item">
+              <span>◷</span>
+              <p>История<br />геометрии</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Геометрическая иллюстрация */}
+        <div className="hero-visual" aria-hidden="true">
+          <svg
+            className="geometry-artwork"
+            viewBox="0 0 620 450"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
           >
-            {t("calculators")}
-            <span>→</span>
-          </Link>
-        </div>
+            <defs>
+              <linearGradient id="glass" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stopColor="var(--accent)" stopOpacity=".65" />
+                <stop offset="45%" stopColor="var(--text-primary)" stopOpacity=".12" />
+                <stop offset="100%" stopColor="var(--text-primary)" stopOpacity=".45" />
+              </linearGradient>
 
-        <div className="hero-decoration" aria-hidden="true">
-          <div className="hero-circle">π</div>
-          <div className="hero-triangle">△</div>
-          <div className="hero-square">∑</div>
-        </div>
-      </section>
+              <radialGradient id="sphere">
+                <stop offset="0%" stopColor="var(--text-primary)" stopOpacity=".02" />
+                <stop offset="80%" stopColor="var(--text-primary)" stopOpacity=".08" />
+                <stop offset="100%" stopColor="var(--accent)" stopOpacity=".3" />
+              </radialGradient>
+            </defs>
 
-      <section className="geometry-section">
-        <div className="section-heading">
-          <h2>{t("calculators")} — 2D</h2>
-        </div>
+            {/* Сетка */}
+            <ellipse
+              cx="310"
+              cy="365"
+              rx="285"
+              ry="55"
+              stroke="var(--text-secondary)"
+              strokeOpacity=".3"
+            />
 
-        <div className="figure-grid">
-          {figures2D.map((figure) => (
-            <Link
-              key={figure.path}
-              to={`/${currentLanguage}/${figure.path}`}
-              className="figure-card"
+            <ellipse
+              cx="310"
+              cy="365"
+              rx="210"
+              ry="38"
+              stroke="var(--text-secondary)"
+              strokeOpacity=".2"
+            />
+
+            <path
+              d="M25 365 H595 M70 345 H550 M120 385 H500"
+              stroke="var(--text-secondary)"
+              strokeOpacity=".2"
+            />
+
+            {/* Сфера */}
+            <circle
+              cx="370"
+              cy="145"
+              r="105"
+              fill="url(#sphere)"
+              stroke="url(#glass)"
+              strokeWidth="3"
+            />
+
+            <path
+              d="M300 90 Q360 25 420 70"
+              stroke="var(--text-primary)"
+              strokeOpacity=".55"
+              strokeWidth="4"
+              strokeLinecap="round"
+            />
+
+            <text
+              x="370"
+              y="155"
+              textAnchor="middle"
+              fill="var(--text-primary)"
+              fontSize="24"
+              fontFamily="Georgia"
             >
-              <span className="figure-symbol">{figure.symbol}</span>
-              <h3>{t(figure.label)}</h3>
-              <span className="card-arrow">→</span>
-            </Link>
-          ))}
-        </div>
-      </section>
+              V = ⁴⁄₃ πr³
+            </text>
 
-      <section className="geometry-section">
-        <div className="section-heading">
-          <h2>{t("calculators")} — 3D</h2>
-        </div>
+            {/* Конус */}
+            <path
+              d="M95 340 L175 85 L260 340 Q178 370 95 340Z"
+              fill="url(#glass)"
+              stroke="var(--accent)"
+              strokeWidth="2.5"
+            />
 
-        <div className="figure-grid">
-          {figures3D.map((figure) => (
-            <Link
-              key={figure.path}
-              to={`/${currentLanguage}/${figure.path}`}
-              className="figure-card"
+            <ellipse
+              cx="177"
+              cy="340"
+              rx="82"
+              ry="20"
+              stroke="var(--accent)"
+              strokeWidth="2"
+            />
+
+            <path
+              d="M175 85 L175 340"
+              stroke="var(--text-primary)"
+              strokeOpacity=".35"
+              strokeDasharray="7 8"
+            />
+
+            <text
+              x="180"
+              y="255"
+              textAnchor="middle"
+              fill="var(--text-primary)"
+              fontSize="18"
+              fontFamily="Georgia"
             >
-              <span className="figure-symbol">{figure.symbol}</span>
-              <h3>{t(figure.label)}</h3>
-              <span className="card-arrow">→</span>
-            </Link>
-          ))}
+              V = ⅓πr²h
+            </text>
+
+            {/* Призма */}
+            <path
+              d="M415 190 L515 155 L575 190 L475 225 Z"
+              fill="url(#glass)"
+              stroke="var(--text-primary)"
+              strokeOpacity=".65"
+              strokeWidth="2"
+            />
+
+            <path
+              d="M415 190 V325 L475 360 V225 M475 360 L575 325 V190"
+              fill="url(#glass)"
+              stroke="var(--text-primary)"
+              strokeOpacity=".65"
+              strokeWidth="2"
+            />
+
+            <path
+              d="M475 225 L575 190 M475 360 V225"
+              stroke="var(--accent)"
+              strokeOpacity=".5"
+              strokeWidth="2"
+            />
+
+            <text
+              x="492"
+              y="285"
+              textAnchor="middle"
+              fill="var(--text-primary)"
+              fontSize="21"
+              fontFamily="Georgia"
+            >
+              V = a³
+            </text>
+
+            {/* Передняя пирамида */}
+            <path
+              d="M270 365 L350 195 L440 365 Z"
+              fill="url(#glass)"
+              stroke="var(--text-primary)"
+              strokeOpacity=".8"
+              strokeWidth="2.5"
+            />
+
+            <path
+              d="M350 195 L350 365"
+              stroke="var(--text-primary)"
+              strokeOpacity=".35"
+              strokeDasharray="6 7"
+            />
+
+            {/* Золотая орбита */}
+            <path
+              d="M35 345 Q310 440 600 230"
+              stroke="var(--accent)"
+              strokeWidth="2.5"
+              strokeOpacity=".8"
+              strokeLinecap="round"
+            />
+          </svg>
         </div>
       </section>
 
-      <section className="home-extra-grid">
-        <Link
-          to={`/${currentLanguage}/quiz`}
-          className="extra-card quiz-card"
-        >
-          <span className="extra-icon">✦</span>
-          <h2>{t("quiz")}</h2>
-          <span className="card-arrow">→</span>
-        </Link>
+      {/* QUICK ACCESS */}
+      <section className="premium-shortcuts">
 
-        <Link
-          to={`/${currentLanguage}/history`}
-          className="extra-card history-card"
-        >
-          <span className="extra-icon">◷</span>
-          <h2>{t("history")}</h2>
-          <span className="card-arrow">→</span>
-        </Link>
+        <div className="shortcuts-heading">
+          <h2>{t("calculators")}</h2>
+          <span />
+        </div>
+
+        <div className="shortcut-content">
+
+          <div className="shortcut-group">
+            <span className="dimension-badge">2D</span>
+
+            {figures2D.map((figure) => (
+              <Link
+                key={figure.path}
+                to={`/${currentLanguage}/${figure.path}`}
+                className="shortcut-link"
+              >
+                <span className="shortcut-symbol">
+                  {figure.symbol}
+                </span>
+                <span>{t(figure.label)}</span>
+              </Link>
+            ))}
+          </div>
+
+          <div className="shortcut-divider" />
+
+          <div className="shortcut-group">
+            <span className="dimension-badge">3D</span>
+
+            {figures3D.map((figure) => (
+              <Link
+                key={figure.path}
+                to={`/${currentLanguage}/${figure.path}`}
+                className="shortcut-link"
+              >
+                <span className="shortcut-symbol">
+                  {figure.symbol}
+                </span>
+                <span>{t(figure.label)}</span>
+              </Link>
+            ))}
+          </div>
+
+          <div className="extra-shortcuts">
+
+            <Link
+              to={`/${currentLanguage}/quiz`}
+              className="extra-shortcut"
+            >
+              <span className="extra-shortcut-icon">✧</span>
+              <span>
+                <strong>{t("quiz")}</strong>
+                <small>Проверка знаний</small>
+              </span>
+              <span className="shortcut-arrow">→</span>
+            </Link>
+
+            <Link
+              to={`/${currentLanguage}/history`}
+              className="extra-shortcut"
+            >
+              <span className="extra-shortcut-icon">◷</span>
+              <span>
+                <strong>{t("history")}</strong>
+                <small>Развитие геометрии</small>
+              </span>
+              <span className="shortcut-arrow">→</span>
+            </Link>
+
+          </div>
+        </div>
       </section>
-    </div>
+    </main>
   );
 }
