@@ -72,13 +72,14 @@ async function getGuestSession(
     },
   });
 
-  res.cookie(COOKIE_NAME, newToken, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
-    maxAge: SESSION_DAYS * 24 * 60 * 60 * 1000,
-    path: "/",
-  });
+res.cookie(COOKIE_NAME, newToken, {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === "production",
+  sameSite:
+    process.env.NODE_ENV === "production" ? "none" : "lax",
+  maxAge: SESSION_DAYS * 24 * 60 * 60 * 1000,
+  path: "/",
+});
 
   return session.id;
 }
