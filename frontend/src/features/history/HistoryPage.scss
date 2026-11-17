@@ -9,55 +9,215 @@
   animation: historyFadeIn 0.4s ease;
 }
 
+
+// =================================
+// HISTORY HERO — FormulaPro style
+// =================================
+
 .history-heading {
+  --history-glow: color-mix(
+    in srgb,
+    var(--accent) 15%,
+    transparent
+  );
+
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 20px;
-  padding: 34px;
+  gap: 30px;
+
+  min-height: 190px;
+  padding: 32px clamp(24px, 4vw, 45px);
+
+  border: 1px solid var(--border-color);
   border-radius: 22px;
-  background: linear-gradient(125deg, #253b80 0%, #5b45c5 55%, #a34fba 100%);
-  color: #fff;
+
+  background:
+    radial-gradient(
+      ellipse at 85% 45%,
+      var(--history-glow),
+      transparent 48%
+    ),
+    linear-gradient(
+      135deg,
+      var(--bg-primary),
+      var(--bg-secondary)
+    );
+
+  color: var(--text-primary);
+
+  transition:
+    background .3s ease,
+    color .3s ease,
+    border-color .3s ease;
+
+  &::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+
+    width: 250px;
+    height: 250px;
+
+    right: 10%;
+    top: -150px;
+
+    border: 1px solid var(--border-color);
+    border-radius: 50%;
+
+    opacity: .5;
+  }
+
+  &::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+
+    width: 170px;
+    height: 170px;
+
+    right: 14%;
+    bottom: -130px;
+
+    border: 1px solid var(--accent);
+    border-radius: 50%;
+
+    opacity: .35;
+  }
 
   h1 {
-    margin: 14px 0 10px;
-    font-size: clamp(25px, 4vw, 36px);
-    font-weight: 800;
+    margin: 20px 0 12px;
+
+    font-size: clamp(36px, 4.5vw, 58px);
+    line-height: 1.05;
+    font-weight: 850;
+    font-style: italic;
+    letter-spacing: -2px;
+
+    color: var(--text-primary);
+
+    span {
+      color: var(--accent-hover);
+    }
   }
 
   p {
+    max-width: 550px;
     margin: 0;
-    color: rgba(255, 255, 255, 0.82);
-    line-height: 1.6;
+
+    color: var(--text-secondary);
+
+    font-size: clamp(14px, 1.3vw, 17px);
+    line-height: 1.7;
   }
 }
 
+.history-heading__content {
+  position: relative;
+  z-index: 2;
+  min-width: 0;
+}
+
 .history-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  color: var(--text-secondary);
+
   font-size: 11px;
   font-weight: 800;
   letter-spacing: 2px;
 }
 
+.history-label__dot {
+  width: 8px;
+  height: 8px;
+  flex-shrink: 0;
+
+  border-radius: 50%;
+  background: var(--accent);
+
+  box-shadow:
+    0 0 12px var(--accent);
+}
+
+.history-label__line {
+  width: 35px;
+  height: 1px;
+
+  background: var(--border-color);
+}
+
+// RECORD COUNTER
+
 .history-count {
+  position: relative;
+  z-index: 2;
+
   display: flex;
   flex-shrink: 0;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 95px;
-  height: 95px;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 20px;
-  background: rgba(255, 255, 255, 0.13);
 
-  span {
-    font-size: 32px;
-    font-weight: 800;
+  width: 125px;
+  min-height: 125px;
+
+  padding: 15px;
+
+  border: 1px solid var(--border-color);
+  border-radius: 22px;
+
+  background: color-mix(
+    in srgb,
+    var(--bg-card) 75%,
+    transparent
+  );
+
+  box-shadow: var(--shadow);
+
+  backdrop-filter: blur(12px);
+
+  transition:
+    transform .25s ease,
+    border-color .25s ease;
+
+  &:hover {
+    transform: translateY(-3px);
+    border-color: var(--accent);
+  }
+
+  > span {
+    color: var(--accent-hover);
+
+    font-size: 36px;
+    line-height: 1.1;
+    font-weight: 850;
+    font-variant-numeric: tabular-nums;
   }
 
   small {
-    font-size: 12px;
+    margin-top: 7px;
+
+    color: var(--text-secondary);
+
+    font-size: 11px;
+    font-weight: 600;
+    text-align: center;
   }
+}
+
+.history-count__icon {
+  margin-bottom: 7px;
+
+  color: var(--accent-hover);
+  font-size: 22px;
+  line-height: 1;
 }
 
 .history-section {
@@ -524,5 +684,60 @@
 
   .history-nested-group {
     padding: 9px;
+  }
+}
+
+
+
+@media (max-width: $mobile) {
+  .history-heading {
+    min-height: 150px;
+    gap: 12px;
+
+    padding: 22px 17px;
+    border-radius: 17px;
+
+    h1 {
+      margin: 15px 0 9px;
+
+      font-size: clamp(27px, 7vw, 38px);
+      letter-spacing: -1.5px;
+    }
+
+    p {
+      font-size: 12px;
+      line-height: 1.5;
+    }
+  }
+
+  .history-label {
+    gap: 6px;
+    font-size: 8px;
+    letter-spacing: 1px;
+    flex-wrap: wrap;
+  }
+
+  .history-label__line {
+    width: 15px;
+  }
+
+  .history-count {
+    width: 76px;
+    min-height: 85px;
+    padding: 8px;
+    border-radius: 15px;
+
+    > span {
+      font-size: 25px;
+    }
+
+    small {
+      font-size: 9px;
+    }
+  }
+
+  .history-count__icon {
+    font-size: 17px;
+    margin-bottom: 5px;
   }
 }

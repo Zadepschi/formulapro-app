@@ -296,30 +296,48 @@ export default function HistoryPage() {
 
   return (
     <div className="history-page">
-      <section className="history-heading">
-        <div>
-          <span className="history-label">FORMULAPRO</span>
+     
+<section className="history-heading">
+  <div className="history-heading__content">
 
-          <h1>
-            {isRussian
-              ? "История вычислений"
-              : "Calculation history"}
-          </h1>
+    <div className="history-label">
+      <span className="history-label__dot" />
+      FORMULAPRO
+      <span className="history-label__line" />
+      {isRussian ? "ВАША ИСТОРИЯ" : "YOUR WORKSPACE"}
+    </div>
 
-          <p>
-            {isRussian
-              ? "Все ваши сохранённые геометрические вычисления в одном месте."
-              : "All your saved geometry calculations in one place."}
-          </p>
-        </div>
+    <h1>
+      {isRussian ? (
+        <>
+          История <span>вычислений</span>
+        </>
+      ) : (
+        <>
+          Calculation <span>history</span>
+        </>
+      )}
+    </h1>
 
-        <div className="history-count">
-          <span>{calculations.length}</span>
-          <small>
-            {isRussian ? "записей" : "records"}
-          </small>
-        </div>
-      </section>
+    <p>
+      {isRussian
+        ? "Все ваши сохранённые геометрические вычисления в одном месте."
+        : "All your saved geometry calculations in one place."}
+    </p>
+
+  </div>
+
+  <div className="history-count">
+    <div className="history-count__icon">◷</div>
+
+    <span>{calculations.length}</span>
+
+    <small>
+      {isRussian ? "записей сохранено" : "saved records"}
+    </small>
+  </div>
+</section>
+
 
       {error && (
         <div className="history-error" role="alert">

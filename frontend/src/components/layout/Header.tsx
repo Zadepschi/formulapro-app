@@ -39,18 +39,37 @@ return (
     </div>
 
     <div className="header-controls">
-      <label className="header-control">
-        <span>{t("language")}</span>
-        <select
-          value={language}
-          onChange={(event) =>
-            handleLanguageChange(event.target.value as Language)
-          }
-        >
-          <option value="ru">RU</option>
-          <option value="en">EN</option>
-        </select>
-      </label>
+     <label className="header-control language-control">
+  <span className="language-icon" aria-label={t("language")} title={t("language")}>
+    <svg
+      viewBox="0 0 24 24"
+      width="20"
+      height="20"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.7"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <circle cx="12" cy="12" r="10" />
+      <path d="M2 12h20" />
+      <path d="M12 2a15.3 15.3 0 0 1 0 20" />
+      <path d="M12 2a15.3 15.3 0 0 0 0 20" />
+    </svg>
+  </span>
+
+  <select
+    value={language}
+    onChange={(event) =>
+      handleLanguageChange(event.target.value as Language)
+    }
+    aria-label={t("language")}
+  >
+    <option value="ru">RU</option>
+    <option value="en">EN</option>
+  </select>
+</label>
 
       <label className="header-control">
         <span>{t("theme")}</span>

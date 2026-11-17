@@ -215,3 +215,21 @@
     min-width: 0;
   }
 }
+
+
+.language-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  flex-shrink: 0;
+
+  svg {
+    display: block;
+    transition: color .2s ease;
+  }
+}
+
+.language-control:hover .language-icon {
+  color: var(--accent-hover);
+}

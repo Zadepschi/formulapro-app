@@ -111,3 +111,57 @@ svg {
     overflow: hidden;
   }
 }
+
+
+
+/* =================================
+   FormulaPro — Custom Scrollbar
+================================= */
+
+:root {
+  --scrollbar-size: 8px;
+  --scrollbar-track: transparent;
+  --scrollbar-thumb: color-mix(
+    in srgb,
+    var(--text-secondary) 45%,
+    transparent
+  );
+  --scrollbar-thumb-hover: var(--accent);
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color:
+    var(--scrollbar-thumb)
+    var(--scrollbar-track);
+}
+
+/* Chrome, Edge, Safari */
+*::-webkit-scrollbar {
+  width: var(--scrollbar-size);
+  height: var(--scrollbar-size);
+}
+
+*::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+  border-radius: 20px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 20px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+  transition: background .25s ease;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover);
+  background-clip: padding-box;
+}
+
+*::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
