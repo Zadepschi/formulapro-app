@@ -42,11 +42,14 @@ const labels: Record<string, { ru: string; en: string }> = {
   incircle: { ru: "Вписанная окружность", en: "Incircle" },
   circumcircle: { ru: "Описанная окружность", en: "Circumcircle" },
   radius: { ru: "Радиус", en: "Radius" },
-  diameter: { ru: "Диаметр", en: "Diameter" },
-  circumference: { ru: "Длина окружности", en: "Circumference" },
-  volume: { ru: "Объём", en: "Volume" },
-  surfaceArea: { ru: "Площадь поверхности", en: "Surface area" },
-  length: { ru: "Длина", en: "Length" },
+angle: { ru: "Угол", en: "Angle" },
+diameter: { ru: "Диаметр", en: "Diameter" },
+circumference: { ru: "Длина окружности", en: "Circumference" },
+arcLength: { ru: "Длина дуги", en: "Arc length" },
+ volume: { ru: "Объём", en: "Volume" },
+surfaceArea: { ru: "Площадь поверхности", en: "Surface area" },
+slantHeight: { ru: "Образующая", en: "Slant height" },
+length: { ru: "Длина", en: "Length" },
   width: { ru: "Ширина", en: "Width" },
   height: { ru: "Высота", en: "Height" },
     questionCount: { ru: "Количество вопросов", en: "Question count" },
@@ -84,9 +87,13 @@ function formatValue(value: unknown, language: string): string {
     ).format(value);
   }
 
-  if (typeof value === "boolean") {
+ if (typeof value === "boolean") {
+  if (language === "ru") {
     return value ? "Да" : "Нет";
   }
+
+  return value ? "Yes" : "No";
+}
 
   if (typeof value === "string") {
     if (value === "sss") {
@@ -129,6 +136,70 @@ function HistoryValue({
   depth?: number;
 }) {
   const isRussian = language === "ru";
+
+// Специальное отображение ответов теста
+if (
+  value !== null &&
+  typeof value === "object" &&
+  !Array.isArray(value) &&
+  "questionRu" in value &&
+  "questionEn" in value
+) {
+  const answer = value as Record<string, unknown>;
+
+  return (
+    <div className="history-nested-group is-nested">
+      <div className="history-nested-title">
+  {isRussian
+    ? `Вопрос ${name.replace("question", "")}`
+    : `Question ${name.replace("question", "")}`}
+</div>
+
+      <div className="history-nested-content">
+        <div className="history-value-row">
+          <span>{isRussian ? "Вопрос" : "Question"}</span>
+          <strong>
+            {String(
+              answer[isRussian ? "questionRu" : "questionEn"] ?? "—"
+            )}
+          </strong>
+        </div>
+
+        <div className="history-value-row">
+          <span>{isRussian ? "Правильно" : "Correct"}</span>
+          <strong>
+            {answer.isCorrect
+              ? isRussian ? "Да" : "Yes"
+              : isRussian ? "Нет" : "No"}
+          </strong>
+        </div>
+
+        <div className="history-value-row">
+          <span>{isRussian ? "Правильный ответ" : "Correct answer"}</span>
+          <strong>
+            {String(
+              answer[
+                isRussian ? "correctAnswerRu" : "correctAnswerEn"
+              ] ?? "—"
+            )}
+          </strong>
+        </div>
+
+        <div className="history-value-row">
+          <span>{isRussian ? "Твой ответ" : "Your answer"}</span>
+          <strong>
+            {String(
+              answer[
+                isRussian ? "selectedAnswerRu" : "selectedAnswerEn"
+              ] ?? "—"
+            )}
+          </strong>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 
   // Если значение является объектом,
   // выводим его вложенные свойства отдельно.

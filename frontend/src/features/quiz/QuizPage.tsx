@@ -212,37 +212,38 @@ export default function QuizPage() {
     setIsSaving(true);
     setSaveError("");
 
-    // Сохраняем ответы как объект с ключами question1, question2 и т. д.
-    // Такой формат корректно отображается рекурсивным рендерером истории.
+  
     const savedAnswers = Object.fromEntries(
-      questions.map((question) => {
-        const selectedId = answers[question.id];
-        const selectedOption = question.options.find(
-          (option) => option.id === selectedId
-        );
-        const correctOption = question.options.find(
-          (option) => option.id === question.correct
-        );
+  questions.map((question) => {
+    const selectedId = answers[question.id];
 
-        return [
-          `question${question.id}`,
-          {
-            question: isRu ? question.ru : question.en,
-            selectedAnswer: selectedOption
-              ? isRu
-                ? selectedOption.ru
-                : selectedOption.en
-              : "",
-            correctAnswer: correctOption
-              ? isRu
-                ? correctOption.ru
-                : correctOption.en
-              : "",
-            isCorrect: selectedId === question.correct,
-          },
-        ];
-      })
+    const selectedOption = question.options.find(
+      (option) => option.id === selectedId
     );
+
+    const correctOption = question.options.find(
+      (option) => option.id === question.correct
+    );
+
+    return [
+      `question${question.id}`,
+      {
+        questionRu: question.ru,
+        questionEn: question.en,
+
+        selectedAnswerRu: selectedOption?.ru ?? "",
+        selectedAnswerEn: selectedOption?.en ?? "",
+
+        correctAnswerRu: correctOption?.ru ?? "",
+        correctAnswerEn: correctOption?.en ?? "",
+
+        isCorrect: selectedId === question.correct,
+      },
+    ];
+  })
+);
+
+ 
 
     try {
       await saveCalculation(

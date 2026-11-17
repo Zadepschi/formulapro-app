@@ -33,8 +33,6 @@ export function AppLayout() {
     setIsMenuOpen(false);
   }, [lang]);
 
-  // Закрываем меню клавишей Escape
-  // и блокируем прокрутку страницы, пока меню открыто
   useEffect(() => {
     if (!isMenuOpen) return;
 

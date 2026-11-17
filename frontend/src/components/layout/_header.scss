@@ -1,9 +1,6 @@
 
 @use "../../styles/variables" as *;
 
-// =================================
-// FormulaPro — Header
-// =================================
 
 .app-header {
   position: relative;
@@ -117,9 +114,6 @@
   }
 }
 
-// =================================
-// Responsive: Desktop and Tablet
-// =================================
 
 @media (max-width: $desktop) {
   .app-header {
@@ -134,9 +128,6 @@
   }
 }
 
-// =================================
-// Responsive: Mobile Navigation
-// =================================
 
 @media (max-width: $tablet) {
   .mobile-menu-button {
@@ -167,9 +158,6 @@
   }
 }
 
-// =================================
-// Responsive: Small Mobile
-// =================================
 
 @media (max-width: $mobile) {
   .app-header {

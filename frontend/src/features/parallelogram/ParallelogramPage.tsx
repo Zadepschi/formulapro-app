@@ -1,17 +1,14 @@
 
 import { useMemo, useState } from "react";
 
-import {
-  calculateParallelogram,
-} from "../../domain/geometry/parallelogram/parallelogram";
+import { calculateParallelogram } from "../../domain/geometry/parallelogram/parallelogram";
 import { ParallelogramSvg } from "./components/ParallelogramSvg";
 import { useI18n } from "../../app/providers/I18nProvider";
 import { saveCalculation } from "../../shared/api/history";
 import "./ParallelogramPage.scss";
 
 export function ParallelogramPage() {
-  const { language } = useI18n();
-  const isRu = language === "ru";
+  const { t } = useI18n();
 
   const [a, setA] = useState("10");
   const [b, setB] = useState("6");
@@ -47,7 +44,8 @@ export function ParallelogramPage() {
     });
   }, [isValid, numericA, numericB, numericH]);
 
-  const format = (value: number) => Number(value.toFixed(2)).toString();
+  const format = (value: number) =>
+    Number(value.toFixed(2)).toString();
 
   function updateInput(
     setter: (value: string) => void,
@@ -79,18 +77,10 @@ export function ParallelogramPage() {
         }
       );
 
-      setSaveMessage(
-        isRu
-          ? "Вычисление успешно сохранено в истории!"
-          : "Calculation successfully saved to history!"
-      );
+      setSaveMessage(t("savedSuccessfully"));
     } catch {
       setSaveError(true);
-      setSaveMessage(
-        isRu
-          ? "Не удалось сохранить вычисление. Проверьте подключение к серверу."
-          : "Could not save the calculation. Check the server connection."
-      );
+      setSaveMessage(t("parallelogramSaveError"));
     } finally {
       setSaving(false);
     }
@@ -99,23 +89,17 @@ export function ParallelogramPage() {
   return (
     <section className="parallelogram-page">
       <header className="parallelogram-page__header">
-        <h1>
-          {isRu ? "Калькулятор параллелограмма" : "Parallelogram Calculator"}
-        </h1>
+        <h1>{t("parallelogramTitle")}</h1>
 
-        <p>
-          {isRu
-            ? "Измени параметры и наблюдай, как меняется параллелограмм."
-            : "Change the parameters and see how the parallelogram changes."}
-        </p>
+        <p>{t("parallelogramSubtitle")}</p>
       </header>
 
       <div className="parallelogram-page__top">
         <div className="parallelogram-card parallelogram-inputs">
-          <h2>{isRu ? "Исходные данные" : "Input values"}</h2>
+          <h2>{t("inputValues")}</h2>
 
           <label htmlFor="parallelogram-a">
-            {isRu ? "Основание (a)" : "Base (a)"}
+            {t("base")} (a)
           </label>
 
           <input
@@ -130,7 +114,7 @@ export function ParallelogramPage() {
           />
 
           <label htmlFor="parallelogram-b">
-            {isRu ? "Боковая сторона (b)" : "Side (b)"}
+            {t("side")} (b)
           </label>
 
           <input
@@ -145,7 +129,7 @@ export function ParallelogramPage() {
           />
 
           <label htmlFor="parallelogram-h">
-            {isRu ? "Высота к основанию (h)" : "Height to base (h)"}
+            {t("heightToBase")} (h)
           </label>
 
           <input
@@ -161,15 +145,13 @@ export function ParallelogramPage() {
 
           {!isValid && (
             <p className="parallelogram-error" role="alert">
-              {isRu
-                ? "Укажи положительные значения. Высота не должна превышать боковую сторону."
-                : "Enter positive values. The height cannot exceed the side length."}
+              {t("invalidParallelogram")}
             </p>
           )}
         </div>
 
         <div className="parallelogram-card parallelogram-card--visual">
-          <h2>{isRu ? "Визуализация" : "Visualization"}</h2>
+          <h2>{t("visualization")}</h2>
 
           {isValid ? (
             <ParallelogramSvg
@@ -179,9 +161,7 @@ export function ParallelogramPage() {
             />
           ) : (
             <p className="parallelogram-error">
-              {isRu
-                ? "Исправь исходные данные для отображения параллелограмма."
-                : "Correct the input values to display the parallelogram."}
+              {t("correctParallelogram")}
             </p>
           )}
         </div>
@@ -189,14 +169,12 @@ export function ParallelogramPage() {
 
       {results && (
         <section className="parallelogram-results">
-          <h2>
-            {isRu ? "Результаты и решение" : "Results and solutions"}
-          </h2>
+          <h2>{t("resultsAndSolution")}</h2>
 
           <div className="parallelogram-results__grid">
             <article className="parallelogram-result-card">
               <span className="parallelogram-result-card__label">
-                {isRu ? "Периметр" : "Perimeter"}
+                {t("perimeter")}
               </span>
 
               <strong className="parallelogram-result-card__value">
@@ -204,10 +182,10 @@ export function ParallelogramPage() {
               </strong>
 
               <div className="parallelogram-result-card__solution">
-                <span>{isRu ? "Формула" : "Formula"}</span>
+                <span>{t("formula")}</span>
                 <p>P = 2(a + b)</p>
 
-                <span>{isRu ? "Решение" : "Solution"}</span>
+                <span>{t("solution")}</span>
                 <p>
                   P = 2 × ({numericA} + {numericB})
                 </p>
@@ -222,7 +200,7 @@ export function ParallelogramPage() {
 
             <article className="parallelogram-result-card">
               <span className="parallelogram-result-card__label">
-                {isRu ? "Площадь" : "Area"}
+                {t("area")}
               </span>
 
               <strong className="parallelogram-result-card__value">
@@ -230,10 +208,10 @@ export function ParallelogramPage() {
               </strong>
 
               <div className="parallelogram-result-card__solution">
-                <span>{isRu ? "Формула" : "Formula"}</span>
+                <span>{t("formula")}</span>
                 <p>S = a × h</p>
 
-                <span>{isRu ? "Решение" : "Solution"}</span>
+                <span>{t("solution")}</span>
                 <p>
                   S = {numericA} × {numericH}
                 </p>
@@ -251,19 +229,15 @@ export function ParallelogramPage() {
               onClick={() => void handleSave()}
               disabled={saving}
             >
-              {saving
-                ? isRu
-                  ? "Сохранение..."
-                  : "Saving..."
-                : isRu
-                  ? "Сохранить в историю"
-                  : "Save to history"}
+              {saving ? t("saving") : t("saveToHistory")}
             </button>
 
             {saveMessage && (
               <p
                 className={`parallelogram-save__message ${
-                  saveError ? "parallelogram-save__message--error" : ""
+                  saveError
+                    ? "parallelogram-save__message--error"
+                    : ""
                 }`}
                 role="status"
               >

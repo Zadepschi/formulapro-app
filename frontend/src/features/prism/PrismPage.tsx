@@ -1,4 +1,6 @@
+
 import { useMemo, useState } from "react";
+
 import { calculatePrism } from "../../domain/geometry/prism/prism";
 import PrismVisualization from "./components/PrismVisualization";
 import { useI18n } from "../../app/providers/I18nProvider";
@@ -6,8 +8,7 @@ import { saveCalculation } from "../../shared/api/history";
 import "./PrismPage.scss";
 
 export default function PrismPage() {
-  const { language } = useI18n();
-  const isRu = language === "ru";
+  const { language, t } = useI18n();
 
   const [length, setLength] = useState("3");
   const [width, setWidth] = useState("2");
@@ -47,9 +48,18 @@ export default function PrismPage() {
   }, [lengthValue, widthValue, heightValue, isValid]);
 
   const formatNumber = (value: number) =>
-    new Intl.NumberFormat(isRu ? "ru-RU" : "en-US", {
+    new Intl.NumberFormat(language === "ru" ? "ru-RU" : "en-US", {
       maximumFractionDigits: 2,
     }).format(value);
+
+  const handleInputChange = (
+    setter: (value: string) => void,
+    value: string
+  ) => {
+    setter(value);
+    setSaveMessage("");
+    setSaveError(false);
+  };
 
   const handleSave = async () => {
     if (!results || !isValid || saving) return;
@@ -72,59 +82,30 @@ export default function PrismPage() {
         }
       );
 
-      setSaveMessage(
-        isRu
-          ? "Вычисление успешно сохранено в истории!"
-          : "Calculation successfully saved to history!"
-      );
+      setSaveMessage(t("savedSuccessfully"));
     } catch {
       setSaveError(true);
-      setSaveMessage(
-        isRu
-          ? "Не удалось сохранить вычисление. Проверьте соединение с сервером."
-          : "Could not save the calculation. Check your server connection."
-      );
+      setSaveMessage(t("prismSaveError"));
     } finally {
       setSaving(false);
     }
   };
 
-  const handleInputChange = (
-    setter: (value: string) => void,
-    value: string
-  ) => {
-    setter(value);
-    setSaveMessage("");
-    setSaveError(false);
-  };
-
   return (
     <main className="prism-page">
       <div className="prism-page__heading">
-        <h1>
-          {isRu
-            ? "Прямоугольный параллелепипед — объём и площадь поверхности"
-            : "Rectangular Prism — Volume and Surface Area"}
-        </h1>
+        <h1>{t("prismTitle")}</h1>
 
-        <p>
-          {isRu
-            ? "Введите длину, ширину и высоту параллелепипеда."
-            : "Enter the length, width and height of the prism."}
-        </p>
+        <p>{t("prismSubtitle")}</p>
       </div>
 
       <div className="prism-page__main">
         <section className="prism-card prism-card--inputs">
-          <h2>
-            {isRu
-              ? "Параметры параллелепипеда"
-              : "Prism Parameters"}
-          </h2>
+          <h2>{t("prismParameters")}</h2>
 
           <div className="prism-field">
             <label htmlFor="prism-length">
-              {isRu ? "Длина (a)" : "Length (a)"}
+              {t("length")} (a)
             </label>
 
             <input
@@ -136,13 +117,13 @@ export default function PrismPage() {
               onChange={(event) =>
                 handleInputChange(setLength, event.target.value)
               }
-              placeholder={isRu ? "Введите длину" : "Enter length"}
+              placeholder={t("enterLength")}
             />
           </div>
 
           <div className="prism-field">
             <label htmlFor="prism-width">
-              {isRu ? "Ширина (b)" : "Width (b)"}
+              {t("width")} (b)
             </label>
 
             <input
@@ -154,13 +135,13 @@ export default function PrismPage() {
               onChange={(event) =>
                 handleInputChange(setWidth, event.target.value)
               }
-              placeholder={isRu ? "Введите ширину" : "Enter width"}
+              placeholder={t("enterWidth")}
             />
           </div>
 
           <div className="prism-field">
             <label htmlFor="prism-height">
-              {isRu ? "Высота (h)" : "Height (h)"}
+              {t("height")} (h)
             </label>
 
             <input
@@ -172,25 +153,19 @@ export default function PrismPage() {
               onChange={(event) =>
                 handleInputChange(setHeight, event.target.value)
               }
-              placeholder={isRu ? "Введите высоту" : "Enter height"}
+              placeholder={t("enterHeight")}
             />
           </div>
 
           {!isValid && (
             <p className="prism-error" role="alert">
-              {isRu
-                ? "Введите положительные значения всех трёх параметров."
-                : "Enter positive values for all three parameters."}
+              {t("invalidPrism")}
             </p>
           )}
         </section>
 
         <section className="prism-card prism-card--visual">
-          <h2>
-            {isRu
-              ? "3D-модель параллелепипеда"
-              : "3D Rectangular Prism Model"}
-          </h2>
+          <h2>{t("prismVisualization")}</h2>
 
           {results && (
             <PrismVisualization
@@ -203,17 +178,13 @@ export default function PrismPage() {
       </div>
 
       <section className="prism-results">
-        <h2>
-          {isRu ? "Результаты расчёта" : "Calculation Results"}
-        </h2>
+        <h2>{t("prismResults")}</h2>
 
         {results ? (
           <div className="prism-results__grid">
             <article className="prism-result-card">
               <span className="prism-result-card__label">
-                {isRu
-                  ? "Объём параллелепипеда"
-                  : "Prism Volume"}
+                {t("prismVolume")}
               </span>
 
               <strong className="prism-result-card__value">
@@ -235,9 +206,7 @@ export default function PrismPage() {
 
             <article className="prism-result-card">
               <span className="prism-result-card__label">
-                {isRu
-                  ? "Полная площадь поверхности"
-                  : "Total Surface Area"}
+                {t("totalSurfaceArea")}
               </span>
 
               <strong className="prism-result-card__value">
@@ -259,9 +228,7 @@ export default function PrismPage() {
           </div>
         ) : (
           <div className="prism-results__empty">
-            {isRu
-              ? "Результаты появятся после ввода корректных значений."
-              : "Results will appear after entering valid values."}
+            {t("prismEmptyResults")}
           </div>
         )}
       </section>
@@ -274,13 +241,7 @@ export default function PrismPage() {
             onClick={() => void handleSave()}
             disabled={saving || !isValid}
           >
-            {saving
-              ? isRu
-                ? "Сохранение..."
-                : "Saving..."
-              : isRu
-                ? "Сохранить в историю"
-                : "Save to history"}
+            {saving ? t("saving") : t("saveToHistory")}
           </button>
 
           {saveMessage && (

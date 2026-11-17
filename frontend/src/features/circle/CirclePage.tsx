@@ -3,14 +3,13 @@ import { useMemo, useState } from "react";
 
 import { calculateCircle } from "../../domain/geometry/circle/circle";
 import { saveCalculation } from "../../shared/api/history";
+import { useI18n } from "../../app/providers/I18nProvider";
+
 import { CircleCanvas } from "./components/CircleCanvas";
 import "./CirclePage.scss";
 
-import { useI18n } from "../../app/providers/I18nProvider";
-
 export function CirclePage() {
-  const { language } = useI18n();
-  const isRu = language === "ru";
+  const { t } = useI18n();
 
   const [radius, setRadius] = useState("50");
   const [angle, setAngle] = useState("90");
@@ -62,17 +61,9 @@ export function CirclePage() {
         }
       );
 
-      setSaveMessage(
-        isRu
-          ? "Вычисление сохранено в истории!"
-          : "Calculation saved to history!"
-      );
+      setSaveMessage(t("savedSuccessfully"));
     } catch {
-      setSaveMessage(
-        isRu
-          ? "Не удалось сохранить. Проверь, запущен ли сервер."
-          : "Could not save. Check whether the server is running."
-      );
+      setSaveMessage(t("saveError"));
     } finally {
       setSaving(false);
     }
@@ -81,20 +72,16 @@ export function CirclePage() {
   return (
     <section className="circle-page">
       <header className="circle-page__header">
-        <h1>{isRu ? "Калькулятор круга" : "Circle Calculator"}</h1>
-        <p>
-          {isRu
-            ? "Измени параметры и наблюдай, как меняется круг."
-            : "Change the parameters and see how the circle changes."}
-        </p>
+        <h1>{t("circleTitle")}</h1>
+        <p>{t("circleSubtitle")}</p>
       </header>
 
       <div className="circle-page__top">
         <div className="circle-card circle-inputs">
-          <h2>{isRu ? "Исходные данные" : "Input values"}</h2>
+          <h2>{t("inputValues")}</h2>
 
           <label htmlFor="circle-radius">
-            {isRu ? "Радиус (r)" : "Radius (r)"}
+            {t("radius")} 
           </label>
 
           <input
@@ -110,7 +97,7 @@ export function CirclePage() {
           />
 
           <label htmlFor="circle-angle">
-            {isRu ? "Угол сектора (°)" : "Sector angle (°)"}
+            {t("sectorAngle")} 
           </label>
 
           <input
@@ -128,15 +115,13 @@ export function CirclePage() {
 
           {!isValid && (
             <p className="circle-error" role="alert">
-              {isRu
-                ? "Укажи радиус больше 0 и угол от 0° до 360°."
-                : "Enter a radius greater than 0 and an angle from 0° to 360°."}
+              {t("invalidCircle")}
             </p>
           )}
         </div>
 
         <div className="circle-card circle-card--visual">
-          <h2>{isRu ? "Визуализация" : "Visualization"}</h2>
+          <h2>{t("visualization")}</h2>
 
           {isValid ? (
             <CircleCanvas
@@ -145,9 +130,7 @@ export function CirclePage() {
             />
           ) : (
             <p className="circle-error">
-              {isRu
-                ? "Исправь исходные данные для отображения круга."
-                : "Correct the input values to display the circle."}
+              {t("correctCircle")}
             </p>
           )}
         </div>
@@ -155,12 +138,12 @@ export function CirclePage() {
 
       {results && (
         <section className="circle-results">
-          <h2>{isRu ? "Результаты и решение" : "Results and solutions"}</h2>
+          <h2>{t("resultsAndSolution")}</h2>
 
           <div className="circle-results__grid">
             <article className="circle-result-card">
               <span className="circle-result-card__label">
-                {isRu ? "Диаметр" : "Diameter"}
+                {t("diameter")}
               </span>
 
               <strong className="circle-result-card__value">
@@ -168,10 +151,10 @@ export function CirclePage() {
               </strong>
 
               <div className="circle-result-card__solution">
-                <span>{isRu ? "Формула" : "Formula"}</span>
+                <span>{t("formula")}</span>
                 <p>d = 2r</p>
 
-                <span>{isRu ? "Решение" : "Solution"}</span>
+                <span>{t("solution")}</span>
                 <p>
                   d = 2 × {numericRadius} ={" "}
                   <strong>{format(results.diameter)}</strong>
@@ -181,7 +164,7 @@ export function CirclePage() {
 
             <article className="circle-result-card">
               <span className="circle-result-card__label">
-                {isRu ? "Длина окружности" : "Circumference"}
+                {t("circumference")}
               </span>
 
               <strong className="circle-result-card__value">
@@ -189,10 +172,10 @@ export function CirclePage() {
               </strong>
 
               <div className="circle-result-card__solution">
-                <span>{isRu ? "Формула" : "Formula"}</span>
+                <span>{t("formula")}</span>
                 <p>C = 2πr</p>
 
-                <span>{isRu ? "Решение" : "Solution"}</span>
+                <span>{t("solution")}</span>
                 <p>
                   C = 2 × π × {numericRadius} ≈{" "}
                   <strong>{format(results.circumference)}</strong>
@@ -202,7 +185,7 @@ export function CirclePage() {
 
             <article className="circle-result-card">
               <span className="circle-result-card__label">
-                {isRu ? "Площадь круга" : "Circle area"}
+                {t("circleArea")}
               </span>
 
               <strong className="circle-result-card__value">
@@ -210,10 +193,10 @@ export function CirclePage() {
               </strong>
 
               <div className="circle-card__solution">
-                <span>{isRu ? "Формула" : "Formula"}</span>
+                <span>{t("formula")}</span>
                 <p>A = πr²</p>
 
-                <span>{isRu ? "Решение" : "Solution"}</span>
+                <span>{t("solution")}</span>
                 <p>
                   A = π × {numericRadius}² ≈{" "}
                   <strong>{format(results.area)}</strong>
@@ -223,7 +206,7 @@ export function CirclePage() {
 
             <article className="circle-result-card">
               <span className="circle-result-card__label">
-                {isRu ? "Длина дуги" : "Arc length"}
+                {t("arcLength")}
               </span>
 
               <strong className="circle-result-card__value">
@@ -231,10 +214,10 @@ export function CirclePage() {
               </strong>
 
               <div className="circle-result-card__solution">
-                <span>{isRu ? "Формула" : "Formula"}</span>
+                <span>{t("formula")}</span>
                 <p>L = 2πr × α / 360°</p>
 
-                <span>{isRu ? "Решение" : "Solution"}</span>
+                <span>{t("solution")}</span>
                 <p>
                   L = 2 × π × {numericRadius} × {numericAngle} / 360 ≈{" "}
                   <strong>{format(results.arcLength)}</strong>
@@ -260,9 +243,7 @@ export function CirclePage() {
                 opacity: saving ? 0.65 : 1,
               }}
             >
-              {saving
-                ? isRu ? "Сохранение..." : "Saving..."
-                : isRu ? "Сохранить в историю" : "Save to history"}
+              {saving ? t("saving") : t("saveToHistory")}
             </button>
 
             {saveMessage && (

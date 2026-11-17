@@ -1,10 +1,6 @@
 
 @use "../../styles/variables" as *;
 
-// =================================
-// FormulaPro — Sidebar
-// =================================
-
 .sidebar {
   position: relative;
   z-index: 25;
@@ -26,9 +22,6 @@
   scrollbar-width: thin;
 }
 
-// =================================
-// Sidebar Navigation
-// =================================
 
 .sidebar-navigation {
   display: flex;
@@ -64,9 +57,6 @@
   margin-top: 22px;
 }
 
-// =================================
-// Sidebar Links
-// =================================
 
 .sidebar-link {
   display: block;
@@ -105,17 +95,10 @@
   }
 }
 
-// =================================
-// Mobile Sidebar Overlay
-// =================================
-
 .sidebar-overlay {
   display: none;
 }
 
-// =================================
-// Responsive: Mobile Navigation
-// =================================
 
 @media (max-width: $tablet) {
   .sidebar {
@@ -227,10 +210,6 @@
   }
 }
 
-// =================================
-// Responsive: Small Mobile
-// =================================
-
 @media (max-width: $mobile) {
   .sidebar {
     width: min(78vw, 270px);
@@ -252,9 +231,6 @@
   }
 }
 
-// =================================
-// Short Mobile Screens
-// =================================
 
 @media (max-width: $tablet) and (max-height: 650px) {
   .sidebar {
