@@ -18,9 +18,9 @@ import { App } from "../app/App";
 
 export const router = createBrowserRouter([
   {
-    path: "/",
-    element: <Navigate to="/ru" replace />,
-  },
+  path: "/",
+  element: <Navigate to="/en" replace />,
+},
   {
     path: "/:lang",
     element: <App />,
@@ -64,8 +64,8 @@ export const router = createBrowserRouter([
 },
     ],
   },
-  {
-    path: "*",
-    element: <Navigate to="/ru" replace />,
-  },
+ {
+  path: "*",
+  element: <Navigate to="/en" replace />,
+},
 ]);

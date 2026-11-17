@@ -62,6 +62,13 @@ const translations = {
 
     aboutVersion: "Версия",
     aboutCopyright: "Все права защищены.",
+    heroEyebrow: "ГЕОМЕТРИЯ • ФОРМУЛЫ • РАСЧЁТЫ",
+featureCalculations: "Расчёты онлайн",
+featureFormulas: "Формулы и объяснения",
+featureTests: "Тесты на знания",
+featureHistory: "История геометрии",
+quizDescription: "Проверка знаний",
+historyDescription: "Развитие геометрии",
   },
 
   en: {
@@ -116,6 +123,13 @@ const translations = {
 
     aboutVersion: "Version",
     aboutCopyright: "All rights reserved.",
+    heroEyebrow: "GEOMETRY • FORMULAS • CALCULATIONS",
+featureCalculations: "Online calculations",
+featureFormulas: "Formulas and explanations",
+featureTests: "Knowledge tests",
+featureHistory: "Geometry history",
+quizDescription: "Test your knowledge",
+historyDescription: "Geometry development",
   },
 };
 
@@ -135,7 +149,7 @@ const STORAGE_KEY = "formulapro:language";
 
 function getInitialLanguage(): Language {
   if (typeof window === "undefined") {
-    return "ru";
+    return "en";
   }
 
   const savedLanguage = localStorage.getItem(STORAGE_KEY);
@@ -144,9 +158,7 @@ function getInitialLanguage(): Language {
     return savedLanguage;
   }
 
-  return navigator.language.toLowerCase().startsWith("ru")
-    ? "ru"
-    : "en";
+  return "en";
 }
 
 interface I18nProviderProps {

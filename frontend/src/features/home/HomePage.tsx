@@ -1,4 +1,3 @@
-
 import { Link, useParams } from "react-router-dom";
 import { useI18n } from "../../app/providers/I18nProvider";
 import "./HomePage.scss";
@@ -28,8 +27,9 @@ export function HomePage() {
       <section className="premium-hero">
 
         <div className="hero-copy">
+
           <div className="eyebrow">
-            ГЕОМЕТРИЯ <span>•</span> ФОРМУЛЫ <span>•</span> РАСЧЁТЫ
+            {t("heroEyebrow")}
           </div>
 
           <h1 className="premium-title">
@@ -41,25 +41,27 @@ export function HomePage() {
           </p>
 
           <div className="feature-list">
+
             <div className="feature-item">
               <span>⌗</span>
-              <p>Расчёты<br />онлайн</p>
+              <p>{t("featureCalculations")}</p>
             </div>
 
             <div className="feature-item">
               <span>▤</span>
-              <p>Формулы<br />и объяснения</p>
+              <p>{t("featureFormulas")}</p>
             </div>
 
             <div className="feature-item">
               <span>▥</span>
-              <p>Тесты<br />на знания</p>
+              <p>{t("featureTests")}</p>
             </div>
 
             <div className="feature-item">
               <span>◷</span>
-              <p>История<br />геометрии</p>
+              <p>{t("featureHistory")}</p>
             </div>
+
           </div>
         </div>
 
@@ -235,7 +237,8 @@ export function HomePage() {
             />
           </svg>
         </div>
-      </section>
+        
+        </section>
 
       {/* QUICK ACCESS */}
       <section className="premium-shortcuts">
@@ -247,7 +250,9 @@ export function HomePage() {
 
         <div className="shortcut-content">
 
+          {/* 2D */}
           <div className="shortcut-group">
+
             <span className="dimension-badge">2D</span>
 
             {figures2D.map((figure) => (
@@ -259,30 +264,102 @@ export function HomePage() {
                 <span className="shortcut-symbol">
                   {figure.symbol}
                 </span>
+
                 <span>{t(figure.label)}</span>
               </Link>
             ))}
+
           </div>
 
           <div className="shortcut-divider" />
 
-          <div className="shortcut-group">
-            <span className="dimension-badge">3D</span>
+          {/* 3D */}
+        
+{/* 3D */}
+<div className="shortcut-group">
 
-            {figures3D.map((figure) => (
-              <Link
-                key={figure.path}
-                to={`/${currentLanguage}/${figure.path}`}
-                className="shortcut-link"
-              >
-                <span className="shortcut-symbol">
-                  {figure.symbol}
-                </span>
-                <span>{t(figure.label)}</span>
-              </Link>
-            ))}
-          </div>
+  <span className="dimension-badge">3D</span>
 
+  {figures3D.map((figure) => (
+    <Link
+      key={figure.path}
+      to={`/${currentLanguage}/${figure.path}`}
+      className="shortcut-link"
+    >
+
+      <svg
+        className="shortcut-symbol icon-3d"
+        viewBox="0 0 40 40"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        aria-hidden="true"
+      >
+
+        {/* SPHERE */}
+        {figure.path === "sphere" && (
+          <>
+            <circle cx="20" cy="20" r="14" />
+
+            <ellipse
+              cx="20"
+              cy="20"
+              rx="6"
+              ry="14"
+            />
+
+            <ellipse
+              cx="20"
+              cy="20"
+              rx="14"
+              ry="5.5"
+            />
+          </>
+        )}
+
+        {/* CONE */}
+        {figure.path === "cone" && (
+          <>
+            <path d="M20 5 L6 30 M20 5 L34 30" />
+
+            <path d="M6 30 C10 36 30 36 34 30" />
+
+            <path
+              d="M6 30 C10 24 30 24 34 30"
+              strokeDasharray="3 3"
+              opacity=".6"
+            />
+          </>
+        )}
+
+        {/* RECTANGULAR PRISM */}
+        {figure.path === "prism" && (
+          <>
+            <path d="M7 13 L22 5 L34 12 L19 21 Z" />
+
+            <path
+              d="
+                M7 13 V29
+                L19 36
+                L34 28
+                V12
+                M19 21 V36
+                M7 29 L19 21
+              "
+            />
+          </>
+        )}
+
+      </svg>
+
+      <span>{t(figure.label)}</span>
+
+    </Link>
+  ))}
+
+</div>
+
+
+          {/* QUIZ / HISTORY */}
           <div className="extra-shortcuts">
 
             <Link
@@ -290,10 +367,12 @@ export function HomePage() {
               className="extra-shortcut"
             >
               <span className="extra-shortcut-icon">✧</span>
+
               <span>
                 <strong>{t("quiz")}</strong>
-                <small>Проверка знаний</small>
+                <small>{t("quizDescription")}</small>
               </span>
+
               <span className="shortcut-arrow">→</span>
             </Link>
 
@@ -302,16 +381,21 @@ export function HomePage() {
               className="extra-shortcut"
             >
               <span className="extra-shortcut-icon">◷</span>
+
               <span>
                 <strong>{t("history")}</strong>
-                <small>Развитие геометрии</small>
+                <small>{t("historyDescription")}</small>
               </span>
+
               <span className="shortcut-arrow">→</span>
             </Link>
 
           </div>
+
         </div>
+
       </section>
+
     </main>
   );
 }
