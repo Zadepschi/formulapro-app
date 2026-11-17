@@ -34,6 +34,13 @@ export interface TriangleResults {
   };
 }
 
+type TriangleErrorKey =
+  | "triangleInvalidSides"
+  | "triangleInvalidSideC"
+  | "triangleInvalidAngle"
+  | "triangleInequalityError"
+  | "triangleAreaError";
+
 function calculateTriangle(
   mode: TriangleMode,
   a: number,
@@ -46,7 +53,7 @@ function calculateTriangle(
   const clamp = (value: number) => Math.max(-1, Math.min(1, value));
 
   if (!Number.isFinite(a) || !Number.isFinite(b) || a <= 0 || b <= 0) {
-    throw new Error("Стороны должны быть положительными числами.");
+    throw new Error("triangleInvalidSides");
   }
 
   let sideC = c;
@@ -56,11 +63,11 @@ function calculateTriangle(
 
   if (mode === "sss") {
     if (!Number.isFinite(c) || c <= 0) {
-      throw new Error("Сторона c должна быть положительным числом.");
+      throw new Error("triangleInvalidSideC");
     }
 
     if (a + b <= c || a + c <= b || b + c <= a) {
-      throw new Error("Не выполняется неравенство треугольника.");
+      throw new Error("triangleInequalityError");
     }
 
     alpha = toDeg(
@@ -73,8 +80,12 @@ function calculateTriangle(
 
     gamma = 180 - alpha - beta;
   } else {
-    if (!Number.isFinite(gammaInput) || gammaInput <= 0 || gammaInput >= 180) {
-      throw new Error("Угол γ должен быть больше 0° и меньше 180°.");
+    if (
+      !Number.isFinite(gammaInput) ||
+      gammaInput <= 0 ||
+      gammaInput >= 180
+    ) {
+      throw new Error("triangleInvalidAngle");
     }
 
     gamma = gammaInput;
@@ -84,7 +95,9 @@ function calculateTriangle(
     );
 
     alpha = toDeg(
-      Math.acos(clamp((b ** 2 + sideC ** 2 - a ** 2) / (2 * b * sideC)))
+      Math.acos(
+        clamp((b ** 2 + sideC ** 2 - a ** 2) / (2 * b * sideC))
+      )
     );
 
     beta = 180 - alpha - gamma;
@@ -104,7 +117,7 @@ function calculateTriangle(
       : (a * b * Math.sin(toRad(gamma))) / 2;
 
   if (!Number.isFinite(area) || area <= 0) {
-    throw new Error("Не удалось вычислить площадь треугольника.");
+    throw new Error("triangleAreaError");
   }
 
   const heights = {
@@ -119,7 +132,11 @@ function calculateTriangle(
     c: 0.5 * Math.sqrt(2 * a ** 2 + 2 * b ** 2 - sideC ** 2),
   };
 
-  const bisector = (opposite: number, side1: number, side2: number) => {
+  const bisector = (
+    opposite: number,
+    side1: number,
+    side2: number
+  ) => {
     const angle = Math.acos(
       clamp(
         (side1 ** 2 + side2 ** 2 - opposite ** 2) /
@@ -171,8 +188,7 @@ function calculateTriangle(
 }
 
 export function TrianglePage() {
-  const { language } = useI18n();
-  const isRu = language === "ru";
+  const { t } = useI18n();
 
   const [mode, setMode] = useState<TriangleMode>("sss");
   const [a, setA] = useState("5");
@@ -209,29 +225,47 @@ export function TrianglePage() {
         error:
           error instanceof Error
             ? error.message
-            : "Ошибка вычисления.",
+            : "triangleCalculationError",
       };
     }
   }, [mode, a, b, c, gamma]);
 
   const result = resultState.result;
-  const error = resultState.error;
+  const error = resultState.error
+    ? t(resultState.error as TriangleErrorKey)
+    : "";
 
   const handleSaveCalculation = async () => {
     if (!result || isSaving) return;
+
     setIsSaving(true);
     setSaveMessage("");
+
     try {
       await saveCalculation(
         "TRIANGLE",
         mode === "sss"
-          ? { mode, a: result.a, b: result.b, c: result.c }
-          : { mode, a: result.a, b: result.b, gamma: result.gamma },
+          ? {
+              mode,
+              a: result.a,
+              b: result.b,
+              c: result.c,
+            }
+          : {
+              mode,
+              a: result.a,
+              b: result.b,
+              gamma: result.gamma,
+            },
         {
           perimeter: result.perimeter,
           semiperimeter: result.semiperimeter,
           area: result.area,
-          angles: { alpha: result.alpha, beta: result.beta, gamma: result.gamma },
+          angles: {
+            alpha: result.alpha,
+            beta: result.beta,
+            gamma: result.gamma,
+          },
           heights: result.heights,
           medians: result.medians,
           bisectors: result.bisectors,
@@ -239,13 +273,10 @@ export function TrianglePage() {
           circumcircle: result.circumcircle,
         }
       );
-      setSaveMessage(isRu ? "Вычисление сохранено в истории." : "Calculation saved to history.");
+
+      setSaveMessage(t("savedSuccessfully"));
     } catch {
-      setSaveMessage(
-        isRu
-          ? "Не удалось сохранить. Проверьте подключение к серверу."
-          : "Could not save. Check the server connection."
-      );
+      setSaveMessage(t("triangleSaveError"));
     } finally {
       setIsSaving(false);
     }
@@ -254,7 +285,7 @@ export function TrianglePage() {
   const solutionCards = result
     ? [
         {
-          title: isRu ? "Периметр" : "Perimeter",
+          title: t("trianglePerimeter"),
           value: result.perimeter,
           formula: "P = a + b + c",
           steps: [
@@ -263,7 +294,7 @@ export function TrianglePage() {
           ],
         },
         {
-          title: isRu ? "Полупериметр" : "Semiperimeter",
+          title: t("triangleSemiperimeter"),
           value: result.semiperimeter,
           formula: "s = P / 2",
           steps: [
@@ -272,7 +303,7 @@ export function TrianglePage() {
           ],
         },
         {
-          title: isRu ? "Площадь" : "Area",
+          title: t("triangleArea"),
           value: result.area,
           formula:
             mode === "sss"
@@ -290,7 +321,7 @@ export function TrianglePage() {
                 ],
         },
         {
-          title: isRu ? "Радиус вписанной окружности" : "Incircle radius",
+          title: t("triangleIncircleRadius"),
           value: result.incircle.radius,
           formula: "r = A / s",
           steps: [
@@ -299,7 +330,7 @@ export function TrianglePage() {
           ],
         },
         {
-          title: isRu ? "Радиус описанной окружности" : "Circumcircle radius",
+          title: t("triangleCircumcircleRadius"),
           value: result.circumcircle.radius,
           formula: "R = abc / 4A",
           steps: [
@@ -313,7 +344,7 @@ export function TrianglePage() {
   const detailGroups = result
     ? [
         {
-          title: isRu ? "Углы треугольника" : "Triangle angles",
+          title: t("triangleAngles"),
           formula: "α + β + γ = 180°",
           rows: [
             {
@@ -332,12 +363,12 @@ export function TrianglePage() {
               formula:
                 mode === "sss"
                   ? `γ = 180° − ${format(result.alpha)}° − ${format(result.beta)}° = ${format(result.gamma)}°`
-                  : `γ = ${format(result.gamma)}° (заданный угол)`,
+                  : `γ = ${format(result.gamma)}° (${t("triangleGivenAngle")})`,
             },
           ],
         },
         {
-          title: isRu ? "Высоты" : "Heights",
+          title: t("triangleHeights"),
           formula: "h = 2A / сторона",
           rows: [
             {
@@ -358,7 +389,7 @@ export function TrianglePage() {
           ],
         },
         {
-          title: isRu ? "Медианы" : "Medians",
+          title: t("triangleMedians"),
           formula: "mₐ = ½√(2b² + 2c² − a²)",
           rows: [
             {
@@ -379,7 +410,7 @@ export function TrianglePage() {
           ],
         },
         {
-          title: isRu ? "Биссектрисы" : "Angle bisectors",
+          title: t("triangleBisectors"),
           formula: "lₐ = 2bc · cos(α/2) / (b+c)",
           rows: [
             {
@@ -405,50 +436,50 @@ export function TrianglePage() {
   const circleGroups = result
     ? [
         {
-          title: isRu ? "Вписанная окружность" : "Incircle",
+          title: t("triangleIncircle"),
           rows: [
             {
-              name: "Радиус r",
+              name: `${t("triangleCircleRadius")} r`,
               value: result.incircle.radius,
               formula: `r = A / s = ${format(result.area)} / ${format(result.semiperimeter)} = ${format(result.incircle.radius)}`,
             },
             {
-              name: "Диаметр d",
+              name: `${t("triangleCircleDiameter")} d`,
               value: result.incircle.diameter,
               formula: `d = 2r = 2 · ${format(result.incircle.radius)} = ${format(result.incircle.diameter)}`,
             },
             {
-              name: "Длина C",
+              name: `${t("triangleCircleCircumference")} C`,
               value: result.incircle.circumference,
               formula: `C = 2πr = ${format(result.incircle.circumference)}`,
             },
             {
-              name: "Площадь A",
+              name: `${t("triangleCircleArea")} A`,
               value: result.incircle.area,
               formula: `A = πr² = ${format(result.incircle.area)}`,
             },
           ],
         },
         {
-          title: isRu ? "Описанная окружность" : "Circumcircle",
+          title: t("triangleCircumcircle"),
           rows: [
             {
-              name: "Радиус R",
+              name: `${t("triangleCircleRadius")} R`,
               value: result.circumcircle.radius,
               formula: `R = abc / 4A = ${format(result.circumcircle.radius)}`,
             },
             {
-              name: "Диаметр d",
+              name: `${t("triangleCircleDiameter")} d`,
               value: result.circumcircle.diameter,
               formula: `d = 2R = ${format(result.circumcircle.diameter)}`,
             },
             {
-              name: "Длина C",
+              name: `${t("triangleCircleCircumference")} C`,
               value: result.circumcircle.circumference,
               formula: `C = 2πR = ${format(result.circumcircle.circumference)}`,
             },
             {
-              name: "Площадь A",
+              name: `${t("triangleCircleArea")} A`,
               value: result.circumcircle.area,
               formula: `A = πR² = ${format(result.circumcircle.area)}`,
             },
@@ -461,19 +492,16 @@ export function TrianglePage() {
     <section className="triangle-page">
       <div className="triangle-heading">
         <span className="triangle-eyebrow">
-          {isRu ? "Геометрия · 2D" : "Geometry · 2D"}
+          {t("heroEyebrow")}
         </span>
-        <h1>{isRu ? "Калькулятор треугольника" : "Triangle Calculator"}</h1>
-        <p>
-          {isRu
-            ? "Рассчитайте параметры треугольника и изучите подробное решение."
-            : "Calculate triangle properties and explore the step-by-step solution."}
-        </p>
+
+        <h1>{t("triangleTitle")}</h1>
+        <p>{t("triangleSubtitle")}</p>
       </div>
 
       <div className="triangle-workspace">
         <div className="triangle-panel triangle-input-panel">
-          <h2>{isRu ? "Параметры" : "Parameters"}</h2>
+          <h2>{t("triangleParameters")}</h2>
 
           <div className="triangle-mode-switch">
             <button
@@ -483,6 +511,7 @@ export function TrianglePage() {
             >
               SSS
             </button>
+
             <button
               type="button"
               className={mode === "sas" ? "active" : ""}
@@ -494,16 +523,12 @@ export function TrianglePage() {
 
           <p className="triangle-mode-description">
             {mode === "sss"
-              ? isRu
-                ? "Три известные стороны"
-                : "Three known sides"
-              : isRu
-                ? "Две стороны и угол между ними"
-                : "Two sides and the included angle"}
+              ? t("triangleModeSSS")
+              : t("triangleModeSAS")}
           </p>
 
           <label className="triangle-field">
-            <span>{isRu ? "Сторона a" : "Side a"}</span>
+            <span>{t("triangleSideA")}</span>
             <input
               type="number"
               min="0"
@@ -514,7 +539,7 @@ export function TrianglePage() {
           </label>
 
           <label className="triangle-field">
-            <span>{isRu ? "Сторона b" : "Side b"}</span>
+            <span>{t("triangleSideB")}</span>
             <input
               type="number"
               min="0"
@@ -526,7 +551,7 @@ export function TrianglePage() {
 
           {mode === "sss" ? (
             <label className="triangle-field">
-              <span>{isRu ? "Сторона c" : "Side c"}</span>
+              <span>{t("triangleSideC")}</span>
               <input
                 type="number"
                 min="0"
@@ -537,7 +562,7 @@ export function TrianglePage() {
             </label>
           ) : (
             <label className="triangle-field">
-              <span>{isRu ? "Угол γ (градусы)" : "Angle γ (degrees)"}</span>
+              <span>{t("triangleAngleGamma")}</span>
               <input
                 type="number"
                 min="0"
@@ -550,16 +575,16 @@ export function TrianglePage() {
           )}
 
           <p className="triangle-live-note">
-            {isRu
-              ? "Результаты обновляются автоматически."
-              : "Results update automatically."}
+            {t("triangleLiveNote")}
           </p>
 
-          {error && <p className="triangle-error">{error}</p>}
+          {error && (
+            <p className="triangle-error">{error}</p>
+          )}
         </div>
 
         <div className="triangle-panel triangle-visual-panel">
-          <h2>{isRu ? "Визуализация" : "Visualization"}</h2>
+          <h2>{t("visualization")}</h2>
 
           {result ? (
             <TriangleSvg
@@ -572,9 +597,7 @@ export function TrianglePage() {
             />
           ) : (
             <div className="triangle-empty">
-              {isRu
-                ? "Проверьте введённые параметры треугольника."
-                : "Please check the triangle parameters."}
+              {t("triangleInputCorrection")}
             </div>
           )}
 
@@ -583,46 +606,60 @@ export function TrianglePage() {
               <input
                 type="checkbox"
                 checked={showHeights}
-                onChange={(event) => setShowHeights(event.target.checked)}
+                onChange={(event) =>
+                  setShowHeights(event.target.checked)
+                }
                 disabled={!result}
               />
-              {isRu ? "Высоты" : "Heights"}
+              {t("triangleHeights")}
             </label>
+
             <label>
               <input
                 type="checkbox"
                 checked={showMedians}
-                onChange={(event) => setShowMedians(event.target.checked)}
+                onChange={(event) =>
+                  setShowMedians(event.target.checked)
+                }
                 disabled={!result}
               />
-              {isRu ? "Медианы" : "Medians"}
+              {t("triangleMedians")}
             </label>
+
             <label>
               <input
                 type="checkbox"
                 checked={showBisectors}
-                onChange={(event) => setShowBisectors(event.target.checked)}
+                onChange={(event) =>
+                  setShowBisectors(event.target.checked)
+                }
                 disabled={!result}
               />
-              {isRu ? "Биссектрисы" : "Bisectors"}
+              {t("triangleBisectors")}
             </label>
+
             <label>
               <input
                 type="checkbox"
                 checked={showIncircle}
-                onChange={(event) => setShowIncircle(event.target.checked)}
+                onChange={(event) =>
+                  setShowIncircle(event.target.checked)
+                }
                 disabled={!result}
               />
-              {isRu ? "Вписанная окружность" : "Incircle"}
+              {t("triangleIncircle")}
             </label>
+
             <label>
               <input
                 type="checkbox"
                 checked={showCircumcircle}
-                onChange={(event) => setShowCircumcircle(event.target.checked)}
+                onChange={(event) =>
+                  setShowCircumcircle(event.target.checked)
+                }
                 disabled={!result}
               />
-              {isRu ? "Описанная окружность" : "Circumcircle"}
+              {t("triangleCircumcircle")}
             </label>
           </div>
         </div>
@@ -631,7 +668,8 @@ export function TrianglePage() {
       {result && (
         <section className="triangle-results">
           <div className="triangle-results-heading">
-            <h2>{isRu ? "Результаты и ход решения" : "Results and solutions"}</h2>
+            <h2>{t("resultsAndSolution")}</h2>
+
             <button
               type="button"
               className="triangle-save-button"
@@ -639,22 +677,36 @@ export function TrianglePage() {
               disabled={isSaving}
             >
               {isSaving
-                ? isRu ? "Сохранение..." : "Saving..."
-                : isRu ? "Сохранить в историю" : "Save to history"}
+                ? t("saving")
+                : t("saveToHistory")}
             </button>
           </div>
+
           {saveMessage && (
-            <p className="triangle-save-message" role="status">{saveMessage}</p>
+            <p
+              className="triangle-save-message"
+              role="status"
+            >
+              {saveMessage}
+            </p>
           )}
 
           <div className="triangle-results-grid">
             {solutionCards.map((card) => (
-              <article className="triangle-result-card" key={card.title}>
+              <article
+                className="triangle-result-card"
+                key={card.title}
+              >
                 <h3>{card.title}</h3>
                 <strong>{format(card.value)}</strong>
-                <div className="triangle-formula">{card.formula}</div>
+
+                <div className="triangle-formula">
+                  {card.formula}
+                </div>
+
                 <div className="triangle-solution">
-                  <b>{isRu ? "Решение" : "Solution"}</b>
+                  <b>{t("solution")}</b>
+
                   {card.steps.map((step) => (
                     <p key={step}>{step}</p>
                   ))}
@@ -663,18 +715,29 @@ export function TrianglePage() {
             ))}
           </div>
 
-          <h2>{isRu ? "Дополнительные вычисления" : "Additional calculations"}</h2>
+          <h2>{t("triangleAdditionalCalculations")}</h2>
 
           <div className="triangle-details-grid">
             {detailGroups.map((group) => (
-              <article className="triangle-panel" key={group.title}>
+              <article
+                className="triangle-panel"
+                key={group.title}
+              >
                 <h3>{group.title}</h3>
-                <div className="triangle-formula">{group.formula}</div>
+
+                <div className="triangle-formula">
+                  {group.formula}
+                </div>
+
                 {group.rows.map((row) => (
-                  <div className="triangle-detail-row" key={row.name}>
+                  <div
+                    className="triangle-detail-row"
+                    key={row.name}
+                  >
                     <strong>
                       {row.name} = {format(row.value)}
                     </strong>
+
                     <p>{row.formula}</p>
                   </div>
                 ))}
@@ -682,17 +745,25 @@ export function TrianglePage() {
             ))}
           </div>
 
-          <h2>{isRu ? "Параметры окружностей" : "Circle properties"}</h2>
+          <h2>{t("triangleCircleProperties")}</h2>
 
           <div className="triangle-results-grid">
             {circleGroups.map((group) => (
-              <article className="triangle-result-card" key={group.title}>
+              <article
+                className="triangle-result-card"
+                key={group.title}
+              >
                 <h3>{group.title}</h3>
+
                 {group.rows.map((row) => (
-                  <div className="triangle-detail-row" key={row.name}>
+                  <div
+                    className="triangle-detail-row"
+                    key={row.name}
+                  >
                     <strong>
                       {row.name}: {format(row.value)}
                     </strong>
+
                     <p>{row.formula}</p>
                   </div>
                 ))}

@@ -1,190 +1,151 @@
+
 import { useState } from "react";
 import { useI18n } from "../../app/providers/I18nProvider";
+import {
+  translations,
+  type TranslationKey,
+} from "../../shared/config/i18n";
 import { saveCalculation } from "../../shared/api/history";
 import "./QuizPage.scss";
 
 type QuizOption = {
   id: string;
-  ru: string;
-  en: string;
+  label: TranslationKey;
 };
 
 type QuizQuestion = {
   id: number;
-  ru: string;
-  en: string;
+  question: TranslationKey;
   options: QuizOption[];
   correct: string;
-  explanationRu: string;
-  explanationEn: string;
+  explanation: TranslationKey;
 };
 
 const questions: QuizQuestion[] = [
   {
     id: 1,
-    ru: "Раздел евклидовой геометрии, в котором изучаются фигуры в пространстве.",
-    en: "The branch of Euclidean geometry that studies shapes in space.",
+    question: "quizQuestion1",
     options: [
-      { id: "a", ru: "Аналитическая геометрия", en: "Analytical geometry" },
-      { id: "b", ru: "Многомерная геометрия", en: "Multidimensional geometry" },
-      { id: "c", ru: "Стереометрия", en: "Stereometry" },
-      { id: "d", ru: "Дифференциальная геометрия", en: "Differential geometry" },
+      { id: "a", label: "quizQuestion1OptionA" },
+      { id: "b", label: "quizQuestion1OptionB" },
+      { id: "c", label: "quizQuestion1OptionC" },
+      { id: "d", label: "quizQuestion1OptionD" },
     ],
     correct: "c",
-    explanationRu:
-      "Стереометрия — раздел евклидовой геометрии, изучающий пространственные фигуры: многогранники, цилиндры, конусы, шары и другие тела.",
-    explanationEn:
-      "Stereometry is the branch of Euclidean geometry that studies solid figures in space, such as polyhedra, cylinders, cones and spheres.",
+    explanation: "quizExplanation1",
   },
   {
     id: 2,
-    ru: "Раздел математики, изучающий общие приёмы действий над величинами, независимо от их числовых значений.",
-    en: "The branch of mathematics that studies general methods of operations on quantities, regardless of their numerical values.",
+    question: "quizQuestion2",
     options: [
-      { id: "a", ru: "Планиметрия", en: "Planimetry" },
-      { id: "b", ru: "Алгебра", en: "Algebra" },
-      { id: "c", ru: "Матрица", en: "Matrix" },
-      { id: "d", ru: "Тригонометрия", en: "Trigonometry" },
+      { id: "a", label: "quizQuestion2OptionA" },
+      { id: "b", label: "quizQuestion2OptionB" },
+      { id: "c", label: "quizQuestion2OptionC" },
+      { id: "d", label: "quizQuestion2OptionD" },
     ],
     correct: "b",
-    explanationRu:
-      "Алгебра изучает общие правила работы с числами, переменными и выражениями. В отличие от обычных вычислений с конкретными числами, она позволяет записывать и исследовать общие зависимости.",
-    explanationEn:
-      "Algebra studies general rules for working with numbers, variables and expressions. It allows us to describe and investigate relationships in a general form.",
+    explanation: "quizExplanation2",
   },
   {
     id: 3,
-    ru: "Раздел евклидовой геометрии, изучающий фигуры на плоскости.",
-    en: "A branch of Euclidean geometry that studies geometric figures on a plane.",
+    question: "quizQuestion3",
     options: [
-      { id: "a", ru: "Планиметрия", en: "Planimetry" },
-      { id: "b", ru: "Топология", en: "Topology" },
-      { id: "c", ru: "Вектор", en: "Vector" },
-      { id: "d", ru: "Дискретная математика", en: "Discrete mathematics" },
+      { id: "a", label: "quizQuestion3OptionA" },
+      { id: "b", label: "quizQuestion3OptionB" },
+      { id: "c", label: "quizQuestion3OptionC" },
+      { id: "d", label: "quizQuestion3OptionD" },
     ],
     correct: "a",
-    explanationRu:
-      "Планиметрия изучает геометрические фигуры на плоскости: точки, прямые, углы, треугольники, окружности и многоугольники.",
-    explanationEn:
-      "Planimetry studies geometric figures on a plane, including points, lines, angles, triangles, circles and polygons.",
+    explanation: "quizExplanation3",
   },
   {
     id: 4,
-    ru: "Раздел математики, изучающий числа, их отношения и свойства.",
-    en: "A branch of mathematics that studies numbers, their relationships, and properties.",
+    question: "quizQuestion4",
     options: [
-      { id: "a", ru: "Тригонометрия", en: "Trigonometry" },
-      { id: "b", ru: "Вычислительная математика", en: "Computational Mathematics" },
-      { id: "c", ru: "Стереометрия", en: "Stereometry" },
-      { id: "d", ru: "Арифметика", en: "Arithmetic" },
+      { id: "a", label: "quizQuestion4OptionA" },
+      { id: "b", label: "quizQuestion4OptionB" },
+      { id: "c", label: "quizQuestion4OptionC" },
+      { id: "d", label: "quizQuestion4OptionD" },
     ],
     correct: "d",
-    explanationRu:
-      "Арифметика изучает числа, их свойства и основные действия над ними: сложение, вычитание, умножение и деление.",
-    explanationEn:
-      "Arithmetic studies numbers, their properties and basic operations: addition, subtraction, multiplication and division.",
+    explanation: "quizExplanation4",
   },
   {
     id: 5,
-    ru: "Раздел математики, изучающий доказательства и вопросы, связанные с основаниями математики.",
-    en: "A branch of mathematics that studies proofs and questions related to the foundations of mathematics.",
+    question: "quizQuestion5",
     options: [
-      { id: "a", ru: "Дедуктивная теория", en: "Deductive Theory" },
-      { id: "b", ru: "Математическая логика", en: "Mathematical Logic" },
-      { id: "c", ru: "Геометрия", en: "Geometry" },
-      { id: "d", ru: "Теория алгоритмов", en: "Algorithm Theory" },
+      { id: "a", label: "quizQuestion5OptionA" },
+      { id: "b", label: "quizQuestion5OptionB" },
+      { id: "c", label: "quizQuestion5OptionC" },
+      { id: "d", label: "quizQuestion5OptionD" },
     ],
     correct: "b",
-    explanationRu:
-      "Математическая логика изучает формальные методы рассуждений, логические высказывания, доказательства и основы математических теорий.",
-    explanationEn:
-      "Mathematical logic studies formal reasoning, logical statements, proofs and the foundations of mathematical theories.",
+    explanation: "quizExplanation5",
   },
   {
     id: 6,
-    ru: "Фигура, изучаемая в планиметрии.",
-    en: "Figure studied in planimetry.",
+    question: "quizQuestion6",
     options: [
-      { id: "a", ru: "Параллелограмм", en: "Parallelogram" },
-      { id: "b", ru: "Тетраэдр", en: "Tetrahedron" },
-      { id: "c", ru: "Сфера", en: "Sphere" },
-      { id: "d", ru: "Куб", en: "Cube" },
+      { id: "a", label: "quizQuestion6OptionA" },
+      { id: "b", label: "quizQuestion6OptionB" },
+      { id: "c", label: "quizQuestion6OptionC" },
+      { id: "d", label: "quizQuestion6OptionD" },
     ],
     correct: "a",
-    explanationRu:
-      "Параллелограмм — плоский четырёхугольник, у которого противоположные стороны попарно параллельны. Поэтому его изучают в планиметрии.",
-    explanationEn:
-      "A parallelogram is a plane quadrilateral whose opposite sides are parallel. Therefore, it is studied in planimetry.",
+    explanation: "quizExplanation6",
   },
   {
     id: 7,
-    ru: "Условие, состоящее в одновременном выполнении нескольких уравнений относительно одной или нескольких переменных.",
-    en: "A condition consisting of the simultaneous satisfaction of several equations with respect to one or more variables.",
+    question: "quizQuestion7",
     options: [
-      { id: "a", ru: "Логарифм", en: "Logarithm" },
-      { id: "b", ru: "Система уравнений", en: "System of equations" },
-      { id: "c", ru: "Интеграл", en: "Integral" },
-      { id: "d", ru: "Модули", en: "Modules" },
+      { id: "a", label: "quizQuestion7OptionA" },
+      { id: "b", label: "quizQuestion7OptionB" },
+      { id: "c", label: "quizQuestion7OptionC" },
+      { id: "d", label: "quizQuestion7OptionD" },
     ],
     correct: "b",
-    explanationRu:
-      "Система уравнений — это несколько уравнений, которые должны выполняться одновременно. Её решением являются значения переменных, удовлетворяющие каждому уравнению системы.",
-    explanationEn:
-      "A system of equations consists of several equations that must hold simultaneously. Its solution is a set of variable values satisfying every equation in the system.",
+    explanation: "quizExplanation7",
   },
   {
     id: 8,
-    ru: "Совокупность инструкций, описывающих порядок действий исполнителя для достижения результата решения задачи за конечное число действий.",
-    en: "A set of instructions describing the sequence of actions for an executor to achieve the desired outcome in solving a problem in a finite number of steps.",
+    question: "quizQuestion8",
     options: [
-      { id: "a", ru: "Алгоритм", en: "Algorithm" },
-      { id: "b", ru: "Математический анализ", en: "Mathematical Analysis" },
-      { id: "c", ru: "Геометрическая прогрессия", en: "Geometric Progression" },
-      { id: "d", ru: "Арифметическая прогрессия", en: "Arithmetic Progression" },
+      { id: "a", label: "quizQuestion8OptionA" },
+      { id: "b", label: "quizQuestion8OptionB" },
+      { id: "c", label: "quizQuestion8OptionC" },
+      { id: "d", label: "quizQuestion8OptionD" },
     ],
     correct: "a",
-    explanationRu:
-      "Алгоритм — конечная последовательность понятных инструкций, выполнение которых приводит к решению задачи или получению определённого результата.",
-    explanationEn:
-      "An algorithm is a finite sequence of clear instructions that leads to solving a problem or obtaining a particular result.",
+    explanation: "quizExplanation8",
   },
   {
     id: 9,
-    ru: "Раздел математики, изучающий закономерности случайных явлений: случайные события, случайные величины, их свойства и операции над ними.",
-    en: "A branch of mathematics that studies the patterns of random phenomena: random events, random variables, their properties, and operations on them.",
+    question: "quizQuestion9",
     options: [
-      { id: "a", ru: "Функциональный анализ", en: "Functional Analysis" },
-      { id: "b", ru: "Математическая статистика", en: "Mathematical Statistics" },
-      { id: "c", ru: "Теория алгоритмов", en: "Algorithm Theory" },
-      { id: "d", ru: "Теория вероятностей", en: "Probability Theory" },
+      { id: "a", label: "quizQuestion9OptionA" },
+      { id: "b", label: "quizQuestion9OptionB" },
+      { id: "c", label: "quizQuestion9OptionC" },
+      { id: "d", label: "quizQuestion9OptionD" },
     ],
     correct: "d",
-    explanationRu:
-      "Теория вероятностей изучает случайные события и численно описывает возможность их наступления. Она также исследует случайные величины и закономерности случайных явлений.",
-    explanationEn:
-      "Probability theory studies random events and describes numerically how likely they are to occur. It also investigates random variables and patterns in random phenomena.",
+    explanation: "quizExplanation9",
   },
   {
     id: 10,
-    ru: "Геометрическая фигура, обычно определяемая как замкнутая ломаная, имеющая больше одного угла.",
-    en: "A geometric figure usually defined as a closed polygonal line that has more than one angle.",
+    question: "quizQuestion10",
     options: [
-      { id: "a", ru: "Конус", en: "Cone" },
-      { id: "b", ru: "Параллелепипед", en: "Parallelepiped" },
-      { id: "c", ru: "Многоугольник", en: "Polygon" },
-      { id: "d", ru: "Октаэдр", en: "Octahedron" },
+      { id: "a", label: "quizQuestion10OptionA" },
+      { id: "b", label: "quizQuestion10OptionB" },
+      { id: "c", label: "quizQuestion10OptionC" },
+      { id: "d", label: "quizQuestion10OptionD" },
     ],
     correct: "c",
-    explanationRu:
-      "Многоугольник — часть плоскости, ограниченная замкнутой ломаной. Его стороны образуют вершины и внутренние углы.",
-    explanationEn:
-      "A polygon is a portion of a plane bounded by a closed polygonal line. Its sides meet at vertices and form interior angles.",
+    explanation: "quizExplanation10",
   },
 ];
 
 export default function QuizPage() {
-  const { language } = useI18n();
-  const isRu = language === "ru";
+  const { t } = useI18n();
 
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [submitted, setSubmitted] = useState(false);
@@ -212,38 +173,43 @@ export default function QuizPage() {
     setIsSaving(true);
     setSaveError("");
 
-  
     const savedAnswers = Object.fromEntries(
-  questions.map((question) => {
-    const selectedId = answers[question.id];
+      questions.map((question) => {
+        const selectedId = answers[question.id];
 
-    const selectedOption = question.options.find(
-      (option) => option.id === selectedId
+        const selectedOption = question.options.find(
+          (option) => option.id === selectedId,
+        );
+
+        const correctOption = question.options.find(
+          (option) => option.id === question.correct,
+        );
+
+        return [
+          `question${question.id}`,
+          {
+            questionRu: translations.ru[question.question],
+            questionEn: translations.en[question.question],
+
+            selectedAnswerRu: selectedOption
+              ? translations.ru[selectedOption.label]
+              : "",
+            selectedAnswerEn: selectedOption
+              ? translations.en[selectedOption.label]
+              : "",
+
+            correctAnswerRu: correctOption
+              ? translations.ru[correctOption.label]
+              : "",
+            correctAnswerEn: correctOption
+              ? translations.en[correctOption.label]
+              : "",
+
+            isCorrect: selectedId === question.correct,
+          },
+        ];
+      }),
     );
-
-    const correctOption = question.options.find(
-      (option) => option.id === question.correct
-    );
-
-    return [
-      `question${question.id}`,
-      {
-        questionRu: question.ru,
-        questionEn: question.en,
-
-        selectedAnswerRu: selectedOption?.ru ?? "",
-        selectedAnswerEn: selectedOption?.en ?? "",
-
-        correctAnswerRu: correctOption?.ru ?? "",
-        correctAnswerEn: correctOption?.en ?? "",
-
-        isCorrect: selectedId === question.correct,
-      },
-    ];
-  })
-);
-
- 
 
     try {
       await saveCalculation(
@@ -258,17 +224,13 @@ export default function QuizPage() {
           percentage,
           correctAnswers: score,
           incorrectAnswers: questions.length - score,
-        }
+        },
       );
 
       setSubmitted(true);
     } catch (error) {
       console.error("Quiz history save failed:", error);
-      setSaveError(
-        isRu
-          ? "Не удалось сохранить результат. Нажмите кнопку ещё раз."
-          : "Could not save the result. Please try again."
-      );
+      setSaveError(t("quizSaveError"));
     } finally {
       setIsSaving(false);
     }
@@ -284,25 +246,31 @@ export default function QuizPage() {
     <main className="quiz-page">
       <header className="quiz-page__header">
         <span className="quiz-page__eyebrow">
-          {isRu ? "Проверь свои знания" : "Test your knowledge"}
+          {t("quizEyebrow")}
         </span>
-        <h1>{isRu ? "Тест знаний" : "Knowledge test"}</h1>
-        <p>
-          {isRu
-            ? "Ответь на 10 вопросов и узнай, насколько хорошо ты знаешь основы математики."
-            : "Answer 10 questions and find out how well you know the basics of mathematics."}
-        </p>
+
+        <h1>{t("quizTitle")}</h1>
+
+        <p>{t("quizSubtitle")}</p>
       </header>
 
-      <section className="quiz-progress" aria-label={isRu ? "Прогресс теста" : "Quiz progress"}>
+      <section
+        className="quiz-progress"
+        aria-label={t("quizProgressLabel")}
+      >
         <div className="quiz-progress__info">
-          <span>{isRu ? "Пройдено вопросов" : "Questions answered"}</span>
-          <strong>{answeredCount} / {questions.length}</strong>
+          <span>{t("quizAnswered")}</span>
+          <strong>
+            {answeredCount} / {questions.length}
+          </strong>
         </div>
+
         <div className="quiz-progress__track">
           <div
             className="quiz-progress__value"
-            style={{ width: `${(answeredCount / questions.length) * 100}%` }}
+            style={{
+              width: `${(answeredCount / questions.length) * 100}%`,
+            }}
           />
         </div>
       </section>
@@ -310,15 +278,22 @@ export default function QuizPage() {
       {submitted && (
         <section className="quiz-score" aria-live="polite">
           <div className="quiz-score__icon">
-            {percentage >= 80 ? "★" : percentage >= 50 ? "✓" : "↗"}
+            {percentage >= 80
+              ? "★"
+              : percentage >= 50
+                ? "✓"
+                : "↗"}
           </div>
+
           <div className="quiz-score__content">
-            <span>{isRu ? "Твой результат" : "Your result"}</span>
-            <strong>{score} / {questions.length}</strong>
+            <span>{t("quizYourResult")}</span>
+
+            <strong>
+              {score} / {questions.length}
+            </strong>
+
             <p>
-              {isRu
-                ? `Правильных ответов: ${percentage}%`
-                : `Correct answers: ${percentage}%`}
+              {t("quizCorrectPercentage")}: {percentage}%
             </p>
           </div>
         </section>
@@ -344,7 +319,8 @@ export default function QuizPage() {
                 <span className="quiz-question__number">
                   {String(question.id).padStart(2, "0")}
                 </span>
-                <h2>{isRu ? question.ru : question.en}</h2>
+
+                <h2>{t(question.question)}</h2>
               </div>
 
               <div className="quiz-question__options">
@@ -358,7 +334,9 @@ export default function QuizPage() {
                       className={[
                         "quiz-option",
                         isSelected ? "quiz-option--selected" : "",
-                        submitted && isRight ? "quiz-option--correct" : "",
+                        submitted && isRight
+                          ? "quiz-option--correct"
+                          : "",
                         submitted && isSelected && !isRight
                           ? "quiz-option--incorrect"
                           : "",
@@ -379,17 +357,25 @@ export default function QuizPage() {
                           }))
                         }
                       />
+
                       <span className="quiz-option__marker">
                         {option.id.toUpperCase()}
                       </span>
+
                       <span className="quiz-option__text">
-                        {isRu ? option.ru : option.en}
+                        {t(option.label)}
                       </span>
+
                       {submitted && isRight && (
-                        <span className="quiz-option__status">✓</span>
+                        <span className="quiz-option__status">
+                          ✓
+                        </span>
                       )}
+
                       {submitted && isSelected && !isRight && (
-                        <span className="quiz-option__status">×</span>
+                        <span className="quiz-option__status">
+                          ×
+                        </span>
                       )}
                     </label>
                   );
@@ -398,14 +384,8 @@ export default function QuizPage() {
 
               {submitted && (
                 <div className="quiz-explanation">
-                  <strong>
-                    {isRu ? "Объяснение" : "Explanation"}
-                  </strong>
-                  <p>
-                    {isRu
-                      ? question.explanationRu
-                      : question.explanationEn}
-                  </p>
+                  <strong>{t("quizExplanationTitle")}</strong>
+                  <p>{t(question.explanation)}</p>
                 </div>
               )}
             </article>
@@ -418,29 +398,28 @@ export default function QuizPage() {
           <>
             {answeredCount < questions.length && (
               <p className="quiz-actions__hint">
-                {isRu
-                  ? `Осталось ответить: ${questions.length - answeredCount}`
-                  : `Questions remaining: ${questions.length - answeredCount}`}
+                {t("quizRemaining")}:{" "}
+                {questions.length - answeredCount}
               </p>
             )}
+
             {saveError && (
               <p className="quiz-actions__hint" role="alert">
                 {saveError}
               </p>
             )}
+
             <button
               className="quiz-button"
               type="button"
               onClick={handleSubmit}
-              disabled={answeredCount !== questions.length || isSaving}
+              disabled={
+                answeredCount !== questions.length || isSaving
+              }
             >
               {isSaving
-                ? isRu
-                  ? "Сохранение..."
-                  : "Saving..."
-                : isRu
-                  ? "Завершить тест"
-                  : "Submit answers"}
+                ? t("quizSaving")
+                : t("quizSubmit")}
             </button>
           </>
         ) : (
@@ -449,7 +428,7 @@ export default function QuizPage() {
             type="button"
             onClick={handleRestart}
           >
-            {isRu ? "Пройти тест заново" : "Try again"}
+            {t("quizRestart")}
           </button>
         )}
       </footer>

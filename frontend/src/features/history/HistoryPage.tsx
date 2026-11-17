@@ -1,6 +1,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useI18n } from "../../app/providers/I18nProvider";
+import type { TranslationKey } from "../../shared/config/i18n";
 import {
   clearHistory,
   deleteCalculation,
@@ -14,62 +15,64 @@ type ConfirmAction =
   | { type: "single"; id: string }
   | { type: "all" };
 
-const calculatorNames: Record<CalculatorType, { ru: string; en: string }> = {
-  CIRCLE: { ru: "Круг", en: "Circle" },
-  TRIANGLE: { ru: "Треугольник", en: "Triangle" },
-  SPHERE: { ru: "Сфера", en: "Sphere" },
-  CONE: { ru: "Конус", en: "Cone" },
-  PARALLELOGRAM: { ru: "Параллелограмм", en: "Parallelogram" },
-  PRISM: { ru: "Призма", en: "Prism" },
-  QUIZ: { ru: "Тест", en: "Quiz" },
+type Translate = (key: TranslationKey) => string;
+
+const calculatorNames: Record<CalculatorType, TranslationKey> = {
+  CIRCLE: "historyCalculatorCircle",
+  TRIANGLE: "historyCalculatorTriangle",
+  SPHERE: "historyCalculatorSphere",
+  CONE: "historyCalculatorCone",
+  PARALLELOGRAM: "historyCalculatorParallelogram",
+  PRISM: "historyCalculatorPrism",
+  QUIZ: "historyCalculatorQuiz",
 };
 
-const labels: Record<string, { ru: string; en: string }> = {
-  a: { ru: "Сторона a", en: "Side a" },
-  b: { ru: "Сторона b", en: "Side b" },
-  c: { ru: "Сторона c", en: "Side c" },
-  mode: { ru: "Метод", en: "Mode" },
-  gamma: { ru: "Угол γ", en: "Angle γ" },
-  alpha: { ru: "Угол α", en: "Angle α" },
-  beta: { ru: "Угол β", en: "Angle β" },
-  angles: { ru: "Углы", en: "Angles" },
-  area: { ru: "Площадь", en: "Area" },
-  perimeter: { ru: "Периметр", en: "Perimeter" },
-  semiperimeter: { ru: "Полупериметр", en: "Semiperimeter" },
-  heights: { ru: "Высоты", en: "Heights" },
-  medians: { ru: "Медианы", en: "Medians" },
-  bisectors: { ru: "Биссектрисы", en: "Angle bisectors" },
-  incircle: { ru: "Вписанная окружность", en: "Incircle" },
-  circumcircle: { ru: "Описанная окружность", en: "Circumcircle" },
-  radius: { ru: "Радиус", en: "Radius" },
-angle: { ru: "Угол", en: "Angle" },
-diameter: { ru: "Диаметр", en: "Diameter" },
-circumference: { ru: "Длина окружности", en: "Circumference" },
-arcLength: { ru: "Длина дуги", en: "Arc length" },
- volume: { ru: "Объём", en: "Volume" },
-surfaceArea: { ru: "Площадь поверхности", en: "Surface area" },
-slantHeight: { ru: "Образующая", en: "Slant height" },
-length: { ru: "Длина", en: "Length" },
-  width: { ru: "Ширина", en: "Width" },
-  height: { ru: "Высота", en: "Height" },
-    questionCount: { ru: "Количество вопросов", en: "Question count" },
-  answers: { ru: "Ответы", en: "Answers" },
-  question: { ru: "Вопрос", en: "Question" },
-  selectedAnswer: { ru: "Твой ответ", en: "Your answer" },
-  correctAnswer: { ru: "Правильный ответ", en: "Correct answer" },
-  isCorrect: { ru: "Правильно", en: "Correct" },
-  score: { ru: "Баллы", en: "Score" },
-  total: { ru: "Всего вопросов", en: "Total questions" },
-  percentage: { ru: "Результат, %", en: "Result, %" },
-  correctAnswers: { ru: "Правильные ответы", en: "Correct answers" },
-  incorrectAnswers: { ru: "Ошибочные ответы", en: "Incorrect answers" },
+const labels: Record<string, TranslationKey> = {
+  a: "historyLabelSideA",
+  b: "historyLabelSideB",
+  c: "historyLabelSideC",
+  mode: "historyLabelMode",
+  gamma: "historyLabelGamma",
+  alpha: "historyLabelAlpha",
+  beta: "historyLabelBeta",
+  angles: "historyLabelAngles",
+  area: "historyLabelArea",
+  perimeter: "historyLabelPerimeter",
+  semiperimeter: "historyLabelSemiperimeter",
+  heights: "historyLabelHeights",
+  medians: "historyLabelMedians",
+  bisectors: "historyLabelBisectors",
+  incircle: "historyLabelIncircle",
+  circumcircle: "historyLabelCircumcircle",
+  radius: "historyLabelRadius",
+  angle: "historyLabelAngle",
+  diameter: "historyLabelDiameter",
+  circumference: "historyLabelCircumference",
+  arcLength: "historyLabelArcLength",
+  volume: "historyLabelVolume",
+  surfaceArea: "historyLabelSurfaceArea",
+  slantHeight: "historyLabelSlantHeight",
+  length: "historyLabelLength",
+  width: "historyLabelWidth",
+  height: "historyLabelHeight",
+  questionCount: "historyLabelQuestionCount",
+  answers: "historyLabelAnswers",
+  question: "historyLabelQuestion",
+  selectedAnswer: "historyLabelSelectedAnswer",
+  correctAnswer: "historyLabelCorrectAnswer",
+  isCorrect: "historyLabelIsCorrect",
+  score: "historyLabelScore",
+  total: "historyLabelTotal",
+  percentage: "historyLabelPercentage",
+  correctAnswers: "historyLabelCorrectAnswers",
+  incorrectAnswers: "historyLabelIncorrectAnswers",
 };
 
-function formatLabel(key: string, isRussian: boolean): string {
-  const known = labels[key];
+function formatLabel(key: string, t: Translate): string {
+  const translationKey = labels[key];
 
-  if (known) {
-    return known[isRussian ? "ru" : "en"];
+  if (translationKey) {
+    return t(translationKey);
   }
 
   return key
@@ -77,35 +80,29 @@ function formatLabel(key: string, isRussian: boolean): string {
     .replace(/^./, (letter) => letter.toUpperCase());
 }
 
-function formatValue(value: unknown, language: string): string {
+function formatValue(
+  value: unknown,
+  language: string,
+  t: Translate,
+): string {
   if (typeof value === "number") {
     return new Intl.NumberFormat(
       language === "ru" ? "ru-RU" : "en-US",
-      {
-        maximumFractionDigits: 4,
-      }
+      { maximumFractionDigits: 4 },
     ).format(value);
   }
 
- if (typeof value === "boolean") {
-  if (language === "ru") {
-    return value ? "Да" : "Нет";
+  if (typeof value === "boolean") {
+    return value ? t("historyYes") : t("historyNo");
   }
-
-  return value ? "Yes" : "No";
-}
 
   if (typeof value === "string") {
     if (value === "sss") {
-      return language === "ru"
-        ? "Три стороны (SSS)"
-        : "Three sides (SSS)";
+      return t("historyModeSSS");
     }
 
     if (value === "sas") {
-      return language === "ru"
-        ? "Две стороны и угол (SAS)"
-        : "Two sides and angle (SAS)";
+      return t("historyModeSAS");
     }
 
     return value;
@@ -117,7 +114,7 @@ function formatValue(value: unknown, language: string): string {
 
   if (Array.isArray(value)) {
     return value
-      .map((item) => formatValue(item, language))
+      .map((item) => formatValue(item, language, t))
       .join(", ");
   }
 
@@ -128,81 +125,65 @@ function HistoryValue({
   name,
   value,
   language,
+  t,
   depth = 0,
 }: {
   name: string;
   value: unknown;
   language: string;
+  t: Translate;
   depth?: number;
 }) {
-  const isRussian = language === "ru";
+  // Специальное отображение ответов теста
+  if (
+    value !== null &&
+    typeof value === "object" &&
+    !Array.isArray(value) &&
+    "questionRu" in value &&
+    "questionEn" in value
+  ) {
+    const answer = value as Record<string, unknown>;
+    const questionKey =
+      language === "ru" ? "questionRu" : "questionEn";
+    const correctKey =
+      language === "ru" ? "correctAnswerRu" : "correctAnswerEn";
+    const selectedKey =
+      language === "ru" ? "selectedAnswerRu" : "selectedAnswerEn";
 
-// Специальное отображение ответов теста
-if (
-  value !== null &&
-  typeof value === "object" &&
-  !Array.isArray(value) &&
-  "questionRu" in value &&
-  "questionEn" in value
-) {
-  const answer = value as Record<string, unknown>;
-
-  return (
-    <div className="history-nested-group is-nested">
-      <div className="history-nested-title">
-  {isRussian
-    ? `Вопрос ${name.replace("question", "")}`
-    : `Question ${name.replace("question", "")}`}
-</div>
-
-      <div className="history-nested-content">
-        <div className="history-value-row">
-          <span>{isRussian ? "Вопрос" : "Question"}</span>
-          <strong>
-            {String(
-              answer[isRussian ? "questionRu" : "questionEn"] ?? "—"
-            )}
-          </strong>
+    return (
+      <div className="history-nested-group is-nested">
+        <div className="history-nested-title">
+          {t("historyQuestionNumber")} {name.replace("question", "")}
         </div>
 
-        <div className="history-value-row">
-          <span>{isRussian ? "Правильно" : "Correct"}</span>
-          <strong>
-            {answer.isCorrect
-              ? isRussian ? "Да" : "Yes"
-              : isRussian ? "Нет" : "No"}
-          </strong>
-        </div>
+        <div className="history-nested-content">
+          <div className="history-value-row">
+            <span>{t("historyLabelQuestion")}</span>
+            <strong>{String(answer[questionKey] ?? "—")}</strong>
+          </div>
 
-        <div className="history-value-row">
-          <span>{isRussian ? "Правильный ответ" : "Correct answer"}</span>
-          <strong>
-            {String(
-              answer[
-                isRussian ? "correctAnswerRu" : "correctAnswerEn"
-              ] ?? "—"
-            )}
-          </strong>
-        </div>
+          <div className="history-value-row">
+            <span>{t("historyLabelIsCorrect")}</span>
+            <strong>
+              {answer.isCorrect ? t("historyYes") : t("historyNo")}
+            </strong>
+          </div>
 
-        <div className="history-value-row">
-          <span>{isRussian ? "Твой ответ" : "Your answer"}</span>
-          <strong>
-            {String(
-              answer[
-                isRussian ? "selectedAnswerRu" : "selectedAnswerEn"
-              ] ?? "—"
-            )}
-          </strong>
+          <div className="history-value-row">
+            <span>{t("historyLabelCorrectAnswer")}</span>
+            <strong>{String(answer[correctKey] ?? "—")}</strong>
+          </div>
+
+          <div className="history-value-row">
+            <span>{t("historyLabelSelectedAnswer")}</span>
+            <strong>{String(answer[selectedKey] ?? "—")}</strong>
+          </div>
         </div>
       </div>
-    </div>
-  );
-}
+    );
+  }
 
-
-  // Если значение является объектом,
-  // выводим его вложенные свойства отдельно.
+  // Отображение вложенных объектов
   if (
     value !== null &&
     typeof value === "object" &&
@@ -215,21 +196,22 @@ if (
         }`}
       >
         <div className="history-nested-title">
-          {formatLabel(name, isRussian)}
+          {formatLabel(name, t)}
         </div>
 
         <div className="history-nested-content">
-          {Object.entries(
-            value as Record<string, unknown>
-          ).map(([childKey, childValue]) => (
-            <HistoryValue
-              key={`${name}-${childKey}`}
-              name={childKey}
-              value={childValue}
-              language={language}
-              depth={depth + 1}
-            />
-          ))}
+          {Object.entries(value as Record<string, unknown>).map(
+            ([childKey, childValue]) => (
+              <HistoryValue
+                key={`${name}-${childKey}`}
+                name={childKey}
+                value={childValue}
+                language={language}
+                t={t}
+                depth={depth + 1}
+              />
+            ),
+          )}
         </div>
       </div>
     );
@@ -237,8 +219,8 @@ if (
 
   return (
     <div className="history-value-row">
-      <span>{formatLabel(name, isRussian)}</span>
-      <strong>{formatValue(value, language)}</strong>
+      <span>{formatLabel(name, t)}</span>
+      <strong>{formatValue(value, language, t)}</strong>
     </div>
   );
 }
@@ -255,17 +237,16 @@ function formatDate(date: string, language: string): string {
     {
       dateStyle: "medium",
       timeStyle: "short",
-    }
+    },
   ).format(parsed);
 }
 
 export default function HistoryPage() {
-  const { language } = useI18n();
-  const isRussian = language === "ru";
+  const { language, t } = useI18n();
 
   const [calculations, setCalculations] = useState<Calculation[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [error, setError] = useState<TranslationKey | "">("");
   const [busyId, setBusyId] = useState<string | null>(null);
   const [clearing, setClearing] = useState(false);
 
@@ -280,15 +261,11 @@ export default function HistoryPage() {
       const data = await getHistory();
       setCalculations(data);
     } catch {
-      setError(
-        isRussian
-          ? "Не удалось загрузить историю. Проверьте, запущен ли сервер."
-          : "Could not load history. Check whether the server is running."
-      );
+      setError("historyLoadError");
     } finally {
       setLoading(false);
     }
-  }, [isRussian]);
+  }, []);
 
   useEffect(() => {
     void loadHistory();
@@ -318,14 +295,10 @@ export default function HistoryPage() {
       await deleteCalculation(id);
 
       setCalculations((current) =>
-        current.filter((item) => item.id !== id)
+        current.filter((item) => item.id !== id),
       );
     } catch {
-      setError(
-        isRussian
-          ? "Не удалось удалить вычисление."
-          : "Could not delete the calculation."
-      );
+      setError("historyDeleteError");
     } finally {
       setBusyId(null);
     }
@@ -341,11 +314,7 @@ export default function HistoryPage() {
       await clearHistory();
       setCalculations([]);
     } catch {
-      setError(
-        isRussian
-          ? "Не удалось очистить историю."
-          : "Could not clear history."
-      );
+      setError("historyClearError");
     } finally {
       setClearing(false);
     }
@@ -367,76 +336,51 @@ export default function HistoryPage() {
 
   return (
     <div className="history-page">
-     
-<section className="history-heading">
-  <div className="history-heading__content">
+      <section className="history-heading">
+        <div className="history-heading__content">
+          <div className="history-label">
+            <span className="history-label__dot" />
+            FORMULAPRO
+            <span className="history-label__line" />
+            {t("historyEyebrow")}
+          </div>
 
-    <div className="history-label">
-      <span className="history-label__dot" />
-      FORMULAPRO
-      <span className="history-label__line" />
-      {isRussian ? "ВАША ИСТОРИЯ" : "YOUR WORKSPACE"}
-    </div>
+          <h1>
+            {t("historyTitleFirst")}{" "}
+            <span>{t("historyTitleSecond")}</span>
+          </h1>
 
-    <h1>
-      {isRussian ? (
-        <>
-          История <span>вычислений</span>
-        </>
-      ) : (
-        <>
-          Calculation <span>history</span>
-        </>
-      )}
-    </h1>
+          <p>{t("historySubtitle")}</p>
+        </div>
 
-    <p>
-      {isRussian
-        ? "Все ваши сохранённые геометрические вычисления в одном месте."
-        : "All your saved geometry calculations in one place."}
-    </p>
-
-  </div>
-
-  <div className="history-count">
-    <div className="history-count__icon">◷</div>
-
-    <span>{calculations.length}</span>
-
-    <small>
-      {isRussian ? "записей сохранено" : "saved records"}
-    </small>
-  </div>
-</section>
-
+        <div className="history-count">
+          <div className="history-count__icon">◷</div>
+          <span>{calculations.length}</span>
+          <small>{t("historySavedRecords")}</small>
+        </div>
+      </section>
 
       {error && (
         <div className="history-error" role="alert">
-          {error}
+          {t(error)}
 
           <button
             type="button"
             onClick={() => void loadHistory()}
           >
-            {isRussian ? "Повторить" : "Retry"}
+            {t("historyRetry")}
           </button>
         </div>
       )}
 
       <section className="history-section">
         <div className="history-toolbar">
-          <h2>
-            {isRussian
-              ? "Ваши вычисления"
-              : "Your calculations"}
-          </h2>
+          <h2>{t("historyCalculations")}</h2>
 
           <button
             type="button"
             className="history-clear-button"
-            onClick={() =>
-              setConfirmAction({ type: "all" })
-            }
+            onClick={() => setConfirmAction({ type: "all" })}
             disabled={
               calculations.length === 0 ||
               clearing ||
@@ -445,36 +389,22 @@ export default function HistoryPage() {
             }
           >
             {clearing
-              ? isRussian
-                ? "Очистка..."
-                : "Clearing..."
-              : isRussian
-                ? "Очистить историю"
-                : "Clear history"}
+              ? t("historyClearing")
+              : t("historyClear")}
           </button>
         </div>
 
         {loading ? (
           <div className="history-state">
-            {isRussian
-              ? "Загрузка истории..."
-              : "Loading history..."}
+            {t("historyLoading")}
           </div>
         ) : calculations.length === 0 ? (
           <div className="history-empty">
             <span className="history-empty-icon">◷</span>
 
-            <h3>
-              {isRussian
-                ? "История пока пуста"
-                : "Your history is empty"}
-            </h3>
+            <h3>{t("historyEmptyTitle")}</h3>
 
-            <p>
-              {isRussian
-                ? "Выполните вычисление в одном из калькуляторов, и оно появится здесь."
-                : "Complete a calculation in one of the calculators, and it will appear here."}
-            </p>
+            <p>{t("historyEmptyDescription")}</p>
           </div>
         ) : (
           <div className="history-list">
@@ -486,17 +416,13 @@ export default function HistoryPage() {
                 <div className="history-card-top">
                   <div>
                     <span className="history-calculator">
-                      {calculatorNames[
-                        calculation.calculator
-                      ]?.[isRussian ? "ru" : "en"] ??
-                        calculation.calculator}
+                      {calculatorNames[calculation.calculator]
+                        ? t(calculatorNames[calculation.calculator])
+                        : calculation.calculator}
                     </span>
 
                     <time dateTime={calculation.createdAt}>
-                      {formatDate(
-                        calculation.createdAt,
-                        language
-                      )}
+                      {formatDate(calculation.createdAt, language)}
                     </time>
                   </div>
 
@@ -514,56 +440,46 @@ export default function HistoryPage() {
                       clearing ||
                       loading
                     }
-                    aria-label={
-                      isRussian
-                        ? "Удалить вычисление"
-                        : "Delete calculation"
-                    }
+                    aria-label={t("historyDelete")}
                   >
-                    {isRussian ? "Удалить" : "Delete"}
+                    {t("historyDelete")}
                   </button>
                 </div>
 
                 <div className="history-data-grid">
                   <div className="history-data-block">
-                    <h3>
-                      {isRussian
-                        ? "Исходные данные"
-                        : "Inputs"}
-                    </h3>
+                    <h3>{t("historyInputs")}</h3>
 
                     <div className="history-values">
-                      {Object.entries(
-                        calculation.inputs ?? {}
-                      ).map(([key, value]) => (
-                        <HistoryValue
-                          key={key}
-                          name={key}
-                          value={value}
-                          language={language}
-                        />
-                      ))}
+                      {Object.entries(calculation.inputs ?? {}).map(
+                        ([key, value]) => (
+                          <HistoryValue
+                            key={key}
+                            name={key}
+                            value={value}
+                            language={language}
+                            t={t}
+                          />
+                        ),
+                      )}
                     </div>
                   </div>
 
                   <div className="history-data-block history-results">
-                    <h3>
-                      {isRussian
-                        ? "Результаты"
-                        : "Results"}
-                    </h3>
+                    <h3>{t("historyResults")}</h3>
 
                     <div className="history-values">
-                      {Object.entries(
-                        calculation.results ?? {}
-                      ).map(([key, value]) => (
-                        <HistoryValue
-                          key={key}
-                          name={key}
-                          value={value}
-                          language={language}
-                        />
-                      ))}
+                      {Object.entries(calculation.results ?? {}).map(
+                        ([key, value]) => (
+                          <HistoryValue
+                            key={key}
+                            name={key}
+                            value={value}
+                            language={language}
+                            t={t}
+                          />
+                        ),
+                      )}
                     </div>
                   </div>
                 </div>
@@ -595,22 +511,14 @@ export default function HistoryPage() {
 
             <h2 id="history-modal-title">
               {confirmAction.type === "all"
-                ? isRussian
-                  ? "Очистить всю историю?"
-                  : "Clear all history?"
-                : isRussian
-                  ? "Удалить вычисление?"
-                  : "Delete calculation?"}
+                ? t("historyConfirmClearTitle")
+                : t("historyConfirmDeleteTitle")}
             </h2>
 
             <p id="history-modal-description">
               {confirmAction.type === "all"
-                ? isRussian
-                  ? "Все сохранённые вычисления будут удалены. Это действие нельзя отменить."
-                  : "All saved calculations will be deleted. This action cannot be undone."
-                : isRussian
-                  ? "Это вычисление будет удалено из истории. Восстановить его будет нельзя."
-                  : "This calculation will be removed from history and cannot be restored."}
+                ? t("historyConfirmClearDescription")
+                : t("historyConfirmDeleteDescription")}
             </p>
 
             <div className="history-modal-actions">
@@ -619,7 +527,7 @@ export default function HistoryPage() {
                 className="history-modal-cancel"
                 onClick={() => setConfirmAction(null)}
               >
-                {isRussian ? "Отмена" : "Cancel"}
+                {t("historyCancel")}
               </button>
 
               <button
@@ -628,7 +536,7 @@ export default function HistoryPage() {
                 onClick={() => void handleConfirmAction()}
                 disabled={busyId !== null || clearing}
               >
-                {isRussian ? "Удалить" : "Delete"}
+                {t("historyDelete")}
               </button>
             </div>
           </div>
