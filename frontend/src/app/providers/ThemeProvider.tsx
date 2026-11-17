@@ -23,7 +23,7 @@ const STORAGE_KEY = "formulapro:theme";
 
 function getInitialTheme(): Theme {
   if (typeof window === "undefined") {
-    return "light";
+    return "dark";
   }
 
   const savedTheme = localStorage.getItem(STORAGE_KEY);
@@ -36,7 +36,7 @@ function getInitialTheme(): Theme {
     return savedTheme;
   }
 
-  return "light";
+  return "dark";
 }
 
 interface ThemeProviderProps {
@@ -57,7 +57,7 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
     );
 
     document.documentElement.style.colorScheme =
-      resolvedTheme === "dark" ? "dark" : "light";
+      resolvedTheme === "light" ? "light" : "dark";
   }, [theme, resolvedTheme]);
 
   return (
