@@ -1,3 +1,4 @@
+
 generator client {
   provider = "prisma-client"
   output   = "../src/generated/prisma"
@@ -17,51 +18,24 @@ enum CalculatorType {
   QUIZ
 }
 
-model User {
+model GuestSession {
   id           String        @id @default(cuid())
-  email        String        @unique
-  passwordHash String
+  tokenHash    String        @unique
+  expiresAt    DateTime
   createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
 
-  sessions     Session[]
   calculations Calculation[]
 }
 
-model GuestSession {
-  id             String        @id @default(cuid())
-  tokenHash      String        @unique
-  expiresAt      DateTime
-  createdAt      DateTime      @default(now())
-
-  calculations   Calculation[]
-}
-
-model Session {
-  id        String   @id @default(cuid())
-  tokenHash String   @unique
-  userId    String
-  expiresAt DateTime
-  createdAt DateTime @default(now())
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([userId])
-}
-
 model Calculation {
-  id             String          @id @default(cuid())
+  id             String         @id @default(cuid())
   calculator     CalculatorType
   inputs         Json
   results        Json
-  createdAt      DateTime        @default(now())
+  createdAt      DateTime       @default(now())
 
-  userId         String?
-  guestSessionId String?
+  guestSessionId String
+  guestSession   GuestSession   @relation(fields: [guestSessionId], references: [id], onDelete: Cascade)
 
-  user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
-  guestSession GuestSession? @relation(fields: [guestSessionId], references: [id], onDelete: Cascade)
-
-  @@index([userId, createdAt])
   @@index([guestSessionId, createdAt])
 }
